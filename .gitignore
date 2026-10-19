@@ -1,0 +1,13 @@
+.firebase/
+firebase-debug.log*
+node_modules/
+__pycache__/
+.env*
+*.sql
+*.gz
+*.zip
+*.wpress
+*.pem
+*.key
+*.log
+test-results.json

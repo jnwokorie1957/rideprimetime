@@ -1,0 +1,14 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const handlers = {};
+let expanded = 'false', open = false, focused = false, js = false;
+const toggle = {getAttribute:()=>expanded,setAttribute:(key,v)=>expanded=v,addEventListener:(key,f)=>handlers['toggle:'+key]=f,focus:()=>focused=true};
+const nav = {classList:{remove:()=>open=false,toggle:(key,v)=>open=v},addEventListener:(key,f)=>handlers['nav:'+key]=f};
+const document = {documentElement:{classList:{add:()=>js=true}},querySelector:s=>s==='.menu-toggle'?toggle:nav,addEventListener:(key,f)=>handlers[key]=f};
+vm.runInNewContext(fs.readFileSync('public/assets/site.js','utf8'),{document});
+assert.equal(js,true);
+handlers['toggle:click']();assert.equal(expanded,'true');assert.equal(open,true);
+handlers.keydown({key:'Escape'});assert.equal(expanded,'false');assert.equal(open,false);assert.equal(focused,true);
+handlers['toggle:click']();handlers['nav:click']({target:{closest:()=>({})}});assert.equal(open,false);
+console.log('PASS: menu opens, Escape closes and restores focus, navigation closes menu');
