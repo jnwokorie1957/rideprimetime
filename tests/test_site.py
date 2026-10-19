@@ -83,6 +83,26 @@ class SiteTests(unittest.TestCase):
             return .2126*v[0]+.7152*v[1]+.0722*v[2]
         for color in ('0964ca','142b45','506277'):
             self.assertGreaterEqual((1.05)/(lum(color)+.05),4.5,color)
+        # Ring against adjacent surface: light pages/footer, blue CTA and dark utility.
+        for ring,surface in [('142b45','ffffff'),('142b45','eaf3fd'),('142b45','f7f9fc'),('ffffff','0964ca'),('ffffff','142b45')]:
+            a,b=sorted((lum(ring),lum(surface)))
+            self.assertGreaterEqual((b+.05)/(a+.05),3,(ring,surface))
+        css=(PUBLIC/'assets/site.css').read_text(encoding='utf-8')
+        self.assertIn('outline:3px solid var(--ink);outline-offset:5px',css)
+        self.assertIn('.utility a:focus-visible,.contact-band a:focus-visible{outline-color:#fff}',css)
+    def test_services_are_directly_discoverable(self):
+        hub=PUBLIC/'non-emergency-medical-transportation-services/index.html'
+        content=hub.read_text(encoding='utf-8')
+        links=re.findall(r'<a class="service-link" href="([^"]+)">([^<]+)</a>',content)
+        expected={p.parent.name for p in (PUBLIC/'non-emergency-medical-transportation-services').glob('*/index.html')}
+        self.assertEqual(len(links),6)
+        self.assertEqual({urlsplit(href).path.strip('/').split('/')[-1] for href,label in links},expected)
+        for href,label in links:
+            self.assertGreater(len(label),20)
+            self.assertNotIn(label.lower(),('learn more','click here'))
+        for slug,term in [('services','Wheelchair Transportation Services'),('book-today','Quote'),('lets-connect','Contact'),('faqs','FAQs')]:
+            source=(PUBLIC/('non-emergency-medical-transportation-'+slug)/'index.html').read_text(encoding='utf-8')
+            self.assertIn(term,re.search(r'<title>(.*?)</title>',source).group(1))
     def test_location_coverage_and_redirects(self):
         cfg=json.loads((ROOT/'firebase.json').read_text())['hosting']
         prefix='/non-emergency-medical-transportation-service-areas-covered/'

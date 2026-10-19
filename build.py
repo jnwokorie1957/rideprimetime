@@ -38,6 +38,20 @@ for slug,title,desc in [
 ('social-events-transportation','Stay connected to your plans','Ask about private-pay wheelchair transportation for a family visit or social outing.')]:
     PAGES.append(('services/'+slug,title+'.','TRIP OPTIONS',desc,[('Check availability','We operate one wheelchair van, focused on southwest Houston, southeast Houston and Bellaire. Call before making a reservation.'),('Agree on the details','Discuss wheelchair fit, assistance needs, any accompanying passenger and the return journey. Facility escort or responsible-adult requirements must be arranged separately.')]))
 
+OUTPATIENT_SECTIONS = {
+    'services/hospital-transport-for-outpatient-services': [
+        ('Confirm the hospital entrance', 'Ask the facility which entrance and department to use for the outpatient visit. Discuss the pickup point and wheelchair access with Ride Primetime before confirming the trip.'),
+        ('Plan for check-in and release', 'Use the facility\'s requested arrival time when discussing the ride. Ask how to coordinate the return if the visit ends earlier or later than expected; a return pickup is subject to an agreed plan and availability.'),
+        ('Arrange any required escort', 'Ask the hospital about responsible-adult or escort requirements, especially after a procedure. Arrange that person separately. Transportation does not replace facility discharge requirements or medical supervision.'),
+    ],
+    'services/outpatient-transportation': [
+        ('Plan a clinic or therapy visit', 'For a scheduled non-emergency clinic, therapy or other outpatient appointment, discuss the destination area, appointment time and wheelchair requirements before booking.'),
+        ('Discuss the full appointment schedule', 'Tell us whether the trip is a single visit or part of a series. One wheelchair van serves planned trips, so each date and return arrangement needs confirmation; recurring availability is not automatic.'),
+        ('Check the return arrangements', 'Ask the clinic about the expected appointment length and any accompanying-person requirements. Confirm how the outward and return journeys will be arranged, and ask about the fare and cancellation terms.'),
+    ],
+}
+PAGES=[(slug,title,kicker,desc,OUTPATIENT_SECTIONS.get(slug,items)) for slug,title,kicker,desc,items in PAGES]
+
 def route(slug):return '/'+PREFIX+slug+'/'
 PENDING_SLUGS={'service-areas-covered/pearland','service-areas-covered/sugar-land'}
 PAGES=[p for p in PAGES if p[0] not in PENDING_SLUGS and p[0]!='service-areas-covered/houston']
@@ -49,6 +63,34 @@ for slug in PENDING_SLUGS:
         assert old.resolve().is_relative_to(PUBLIC.resolve())
         draft=ROOT/'drafts'/(slug.split('/')[-1]+'.html');draft.parent.mkdir(exist_ok=True)
         draft.write_bytes(old.read_bytes());old.unlink()
+
+PAGE_TITLES = {
+    'what-we-stand-for': 'About Our Houston Wheelchair Transportation Service',
+    'services': 'Private-Pay Wheelchair Transportation Services in Houston',
+    'book-today': 'Request a Wheelchair Ride and Private-Pay Quote',
+    'lets-connect': 'Contact Ride Primetime in Houston',
+    'service-areas-covered': 'Wheelchair Transportation Areas: Houston and Bellaire',
+    'faqs': 'Wheelchair Transportation and Booking FAQs',
+    'set-an-appointment': 'Plan Non-Emergency Appointment Transportation',
+    'testimonials': 'Share Your Ride Primetime Feedback',
+    'view-map-and-directions': 'Confirm Your Houston or Bellaire Pickup Area',
+    'what-we-stand-for/why-choose-us': 'Our Approach to Private-Pay Wheelchair Transportation',
+    'what-we-stand-for/get-to-know-the-owner': 'Get to Know Ride Primetime',
+    'lets-connect/unlock-20-percent-off-your-first-ride': 'Ask About Current Private-Pay Ride Pricing',
+    'services/wheelchair-transportation': 'Private-Pay Wheelchair Transportation in Houston',
+    'services/ambulatory-transportation-nemt': 'Discuss Mobility Needs and Trip Suitability',
+    'services/dialysis-and-reoccuring-transportation': 'Plan Dialysis and Recurring Appointment Rides',
+    'services/hospital-transport-for-outpatient-services': 'Wheelchair Transportation for Hospital Outpatient Visits',
+    'services/outpatient-transportation': 'Plan a Non-Emergency Outpatient Journey',
+    'services/social-events-transportation': 'Wheelchair Transportation for Social and Family Visits',
+}
+
+def service_cards():
+    items=[p for p in PAGES if p[0].startswith('services/')]
+    return '<div class="cards">'+''.join(
+        f'<article class="card"><span class="card-number">{n:02}</span><h2><a class="service-link" href="{route(slug)}">{escape(PAGE_TITLES[slug])}</a></h2><p>{escape(desc)}</p></article>'
+        for n,(slug,title,kicker,desc,sections) in enumerate(items,1))+'</div>'
+
 def location_links():
     return '<nav class="location-links" aria-label="Related locations">'+''.join(f'<a href="{route("service-areas-covered/"+key)}">{escape(loc["name"])}</a>' for key,loc in LOCATIONS.items())+'</nav><p class="related-links"><a href="'+route('services/wheelchair-transportation')+'">Wheelchair service</a> · <a href="'+route('book-today')+'">Plan your trip</a> · <a href="'+route('faqs')+'">Booking questions</a></p>'
 CONTACT=route('lets-connect'); BOOK=route('book-today')
@@ -67,12 +109,14 @@ paths=['/']
 for slug,title,kicker,desc,items in PAGES:
     path=route(slug);paths.append(path)
     body=f'<section class="page-hero wrap"><a class="breadcrumb" href="/">Home /</a><p class="eyebrow">{escape(kicker)}</p><h1>{escape(title)}</h1><p class="lead">{escape(desc)}</p></section><section class="section wrap page-content">{cards(items)}</section>'
+    if slug == "services":
+        body+=f'<section class="section wrap page-content"><h2>Explore trip options</h2>{service_cards()}</section>'
     if slug.startswith('service-areas-covered'):
         loc=LOCATIONS.get(slug.rsplit('/',1)[-1],{})
         source=loc.get('source')
         note=f'<p class="fine">Local geography: <a href="{source[1]}">{escape(source[0])}</a>. Geographic context does not establish a business affiliation or guaranteed availability.</p>' if source else ''
         body+=f'<section class="wrap section prose"><h2>Explore local trip planning</h2>{location_links()}{note}</section>'
-    write(path,document(title,desc,path,body))
+    write(path,document(PAGE_TITLES.get(slug,title),desc,path,body))
 privacy='<section class="page-hero wrap"><p class="eyebrow">PRIVACY</p><h1>A simpler website.<br>Less information to share.</h1><p class="lead">This website does not include an online booking form, advertising trackers or analytics scripts.</p></section><section class="section wrap prose"><h2>When you visit</h2><p>Hosting providers may process technical information such as IP addresses and request logs to deliver and protect the site. This site does not set application cookies or store information in your browser.</p><h2>When you contact us</h2><p>Calling or emailing uses your phone or email provider. Your communication is received by Ride Primetime to respond to your inquiry. Please do not email medical records, insurance numbers or detailed health information.</p><h2>Questions and requests</h2><p>Contact Ride Primetime using the phone or email links below to ask about information you have shared. This website does not collect payment details or confirm bookings.</p></section>'
 write('/privacy-policy/',document('Privacy','How this static website handles visits and contact inquiries.','/privacy-policy/',privacy));paths.append('/privacy-policy/')
 links=''.join(f'<li><a href="{route(s)}">{escape(t)}</a></li>' for s,t,*_ in PAGES)
