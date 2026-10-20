@@ -7,3 +7,5 @@
 /* Focus rings contrast with their surrounding surfaces, including dark bands. */
 .utility a:focus-visible,.contact-band a:focus-visible{outline-color:#fff}
 .service-link{color:var(--blue);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}.service-link:hover{text-decoration-thickness:2px}
+
+.topic-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0}.topic-links a{display:block;border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--blue);font-size:16px;text-underline-offset:4px;overflow-wrap:anywhere}@media(max-width:760px){.topic-links{grid-template-columns:1fr}}

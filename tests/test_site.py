@@ -19,9 +19,9 @@ class SiteTests(unittest.TestCase):
         cls.pages={p:Page() for p in PUBLIC.rglob('*.html')}
         for p,parser in cls.pages.items():parser.feed(p.read_text(encoding='utf-8'))
     def test_page_count_and_sitemap(self):
-        self.assertEqual(len(self.pages),26) # 25 canonical routes plus 404
+        self.assertEqual(len(self.pages),29) # 28 canonical routes plus 404
         urls=[e.text for e in ET.parse(PUBLIC/'sitemap.xml').iter() if e.tag.endswith('loc')]
-        self.assertEqual(len(urls),25);self.assertEqual(len(set(urls)),25)
+        self.assertEqual(len(urls),28);self.assertEqual(len(set(urls)),28)
         for u in urls:self.assertTrue((PUBLIC/urlsplit(u).path.strip('/')/'index.html').is_file(),u)
     def test_all_local_references_resolve(self):
         for p,parser in self.pages.items():
@@ -95,7 +95,7 @@ class SiteTests(unittest.TestCase):
         content=hub.read_text(encoding='utf-8')
         links=re.findall(r'<a class="service-link" href="([^"]+)">([^<]+)</a>',content)
         expected={p.parent.name for p in (PUBLIC/'non-emergency-medical-transportation-services').glob('*/index.html')}
-        self.assertEqual(len(links),6)
+        self.assertEqual(len(links),9)
         self.assertEqual({urlsplit(href).path.strip('/').split('/')[-1] for href,label in links},expected)
         for href,label in links:
             self.assertGreater(len(label),20)
@@ -114,5 +114,38 @@ class SiteTests(unittest.TestCase):
         for slug in ('pearland','sugar-land'):
             self.assertFalse((PUBLIC/(prefix+slug).strip('/')/'index.html').exists())
             self.assertTrue(any(slug in r['source'] and r['type']==302 for r in cfg['redirects']))
+
+    def test_houston_wide_scope_and_truthful_boundaries(self):
+        combined=' '.join(' '.join(page.text) for page in self.pages.values())
+        for old in ('focus on southwest Houston, southeast Houston and Bellaire', 'focused on southwest Houston', 'Our confirmed service is wheelchair transportation', 'Outside these areas?'):
+            self.assertNotIn(old,combined)
+        hub=' '.join(self.pages[PUBLIC/'non-emergency-medical-transportation-service-areas-covered/index.html'].text)
+        self.assertIn('north, south, east, west and central Houston',hub)
+        self.assertIn('one wheelchair-accessible van',hub)
+        for slug in ('ambulatory-transportation-nemt','outpatient-transportation','texas-medical-center-transportation','facility-coordinators'):
+            text=' '.join(self.pages[PUBLIC/'non-emergency-medical-transportation-services'/slug/'index.html'].text)
+            self.assertRegex(text,r'responsible[ -]adult')
+            self.assertIn('not automatically',text)
+        outpatient=' '.join(self.pages[PUBLIC/'non-emergency-medical-transportation-services/outpatient-transportation/index.html'].text)
+        self.assertIn('opening in 2027',outpatient)
+        self.assertNotIn('24-hour service',combined)
+
+    def test_new_topics_reachable_without_footer(self):
+        home=(PUBLIC/'index.html').read_text(encoding='utf-8').split('<footer>')[0]
+        for slug in ('texas-medical-center-transportation','rehabilitation-appointment-transportation','facility-coordinators'):
+            self.assertIn('/non-emergency-medical-transportation-services/'+slug+'/',home)
+        for p,parser in self.pages.items():
+            canonical=[d['href'] for t,d in parser.tags if t=='link' and d.get('rel')=='canonical']
+            expected='https://www.rideprimetime.net/'+(p.relative_to(PUBLIC).parent.as_posix().strip('.')+'/' if p.name=='index.html' else '404.html')
+            self.assertEqual(canonical,[expected.replace('net//','net/')])
+
+    def test_original_routes_preserved(self):
+        original={'privacy-policy','sitemap','non-emergency-medical-transportation-lets-connect','non-emergency-medical-transportation-testimonials','non-emergency-medical-transportation-faqs','non-emergency-medical-transportation-services','non-emergency-medical-transportation-what-we-stand-for','non-emergency-medical-transportation-book-today','non-emergency-medical-transportation-set-an-appointment','non-emergency-medical-transportation-view-map-and-directions','non-emergency-medical-transportation-service-areas-covered'}
+        original.update('non-emergency-medical-transportation-services/'+s for s in ('ambulatory-transportation-nemt','wheelchair-transportation','outpatient-transportation','hospital-transport-for-outpatient-services','dialysis-and-reoccuring-transportation','social-events-transportation'))
+        original.update('non-emergency-medical-transportation-what-we-stand-for/'+s for s in ('get-to-know-the-owner','why-choose-us'))
+        original.add('non-emergency-medical-transportation-lets-connect/unlock-20-percent-off-your-first-ride')
+        original.add('non-emergency-medical-transportation-service-areas-covered/houston')
+        for slug in original:self.assertTrue((PUBLIC/slug/'index.html').exists(),slug)
+        self.assertTrue((PUBLIC/'index.html').exists())
 
 if __name__=='__main__':unittest.main()
