@@ -19,9 +19,9 @@ class SiteTests(unittest.TestCase):
         cls.pages={p:Page() for p in PUBLIC.rglob('*.html')}
         for p,parser in cls.pages.items():parser.feed(p.read_text(encoding='utf-8'))
     def test_page_count_and_sitemap(self):
-        self.assertEqual(len(self.pages),29) # 28 canonical routes plus 404
+        self.assertEqual(len(self.pages),31) # 30 canonical routes plus 404
         urls=[e.text for e in ET.parse(PUBLIC/'sitemap.xml').iter() if e.tag.endswith('loc')]
-        self.assertEqual(len(urls),28);self.assertEqual(len(set(urls)),28)
+        self.assertEqual(len(urls),30);self.assertEqual(len(set(urls)),30)
         for u in urls:self.assertTrue((PUBLIC/urlsplit(u).path.strip('/')/'index.html').is_file(),u)
     def test_all_local_references_resolve(self):
         for p,parser in self.pages.items():
@@ -147,5 +147,19 @@ class SiteTests(unittest.TestCase):
         original.add('non-emergency-medical-transportation-service-areas-covered/houston')
         for slug in original:self.assertTrue((PUBLIC/slug/'index.html').exists(),slug)
         self.assertTrue((PUBLIC/'index.html').exists())
+
+    def test_district_guides_have_distinct_local_utility(self):
+        prefix='non-emergency-medical-transportation-service-areas-covered'
+        hub=self.pages[PUBLIC/prefix/'index.html']
+        texts=[]
+        for slug,fact in [('west-houston-memorial','Frostwood Drive'),('north-northwest-houston','Cypress Woods Medical Drive')]:
+            page=self.pages[PUBLIC/prefix/slug/'index.html'];text=' '.join(page.text);texts.append(text)
+            self.assertIn('/'+prefix+'/'+slug+'/',hub.refs)
+            self.assertIn(fact,text)
+            self.assertEqual(sum(t=='article' for t,d in page.tags),6)
+            self.assertTrue(any(urlsplit(ref).netloc in ('memorialhermann.org','www.houstonmethodist.org') for ref in page.refs))
+            self.assertRegex(text,r'(?i)one[- ](?:wheelchair-accessible )?van')
+        self.assertNotIn('Frostwood Drive',texts[1])
+        self.assertNotIn('Cypress Woods Medical Drive',texts[0])
 
 if __name__=='__main__':unittest.main()

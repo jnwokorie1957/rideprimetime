@@ -17,3 +17,31 @@ LOCATIONS={
 'sections':[('Bellaire pickup or Bellaire destination?','Tell us which end of the journey is in Bellaire and where the other end will be. We confirm the full route; a location inside the coverage area does not by itself confirm availability.'),('Local visits and appointments','Ask about a planned appointment, family visit or social destination. Explain the arrival time you need and whether the trip involves more than one stop.'),('Agree on the accessible meeting point','Confirm the entrance, wheelchair-accessible pickup point and any companion during booking. We do not list a walk-in office in Bellaire or claim an affiliation with local facilities.'),('Arrange a return before you travel','For a round trip, discuss whether the finish time is known and how the return pickup will work. Do not assume waiting time is included in a quote.'),('Private-pay and a single-van schedule','Request the fare and confirm availability directly. Recurring trips need individual scheduling, and a general inquiry is not a reservation.'),('Call for practical planning','Use the phone link to discuss the route and wheelchair requirements. Email is available for general inquiries; avoid sending sensitive health information.')],
 'source':None}
 }
+
+# Two useful district guides, not copies of the legacy city sales pages.
+LOCATIONS.update({
+'west-houston-memorial': {
+ 'name':'West Houston / Memorial',
+ 'title':'Wheelchair and ambulatory rides in West Houston and Memorial.',
+ 'intro':'Plan a private-pay appointment ride in West Houston or the Memorial area. The useful starting point is your specific clinic and entrance, not just a hospital system name. Houston-wide coverage remains subject to route, mobility and scheduling confirmation.',
+ 'sections':[
+  ('Memorial City is not the Texas Medical Center', 'Memorial Hermann lists Memorial City Medical Center at 921 Gessner Road, Houston, TX 77024. Confirm the location on your appointment instructions before requesting a ride; Memorial City and the Texas Medical Center require different travel plans.'),
+  ('Choose the correct campus entrance', 'The Memorial City directory describes East Tower, West Pavilion and Memorial Hermann Tower entrances, plus several medical plazas. Ask your department which building and entrance to use. A campus street address is a reference point, not permission to stop at any driveway.'),
+  ('Outpatient testing and surgery', 'The official directory places outpatient testing and surgery parking on the west side along Frostwood Drive near West Pavilion. Confirm the actual passenger drop-off with the facility rather than assuming a parking entrance is the pickup point. Arrange any required responsible adult separately from the driver.'),
+  ('Two appointments can mean two destinations', 'If a specialist visit and rehabilitation or imaging appointment occur on the same day, list both addresses and times when requesting transport. Do not assume they share a building or that a second stop is included in the first fare.'),
+  ('Return from the place you will actually exit', 'Before travel, identify the return building and the person who will tell us the passenger is ready. Agree on arrangements if the appointment runs late. One wheelchair-accessible van serves our schedule; a west-Houston pickup is not an immediate-dispatch guarantee.'),
+  ('Bring a complete request', 'Call with the pickup area, facility building, date, check-in time, mobility aids or wheelchair, companion and return needs. Ask for the private-pay quote and cancellation terms. We do not claim a local branch, hospital contract or medical supervision.')],
+ 'source':('Memorial Hermann: Memorial City location and campus access','https://memorialhermann.org/locations/memorial-city')},
+'north-northwest-houston': {
+ 'name':'North / Northwest Houston',
+ 'title':'Plan medical rides in North and Northwest Houston.',
+ 'intro':'Arrange Houston wheelchair or ambulatory transportation around the exact north or northwest destination on your appointment notice. These medical corridors include different campuses; confirm each requested route and date with Ride Primetime.',
+ 'sections':[
+  ('Distinguish Willowbrook from other campuses', 'Houston Methodist lists Willowbrook Hospital at 18220 State Highway 249, Houston, TX 77070, serving northwest Houston. Use the hospital\'s official campus map and your department\'s instructions to identify the building and accessible meeting point.'),
+  ('North Houston surgery requires a campus check', 'Kelsey-Seybold lists its North Houston Campus ambulatory surgery location at 15655 Cypress Woods Medical Drive, Houston, TX 77014. It is a separate destination from Willowbrook. Read the campus name and address from the actual procedure instructions when discussing a ride.'),
+  ('Plan cross-town travel without a fixed-time promise', 'A journey from another part of Houston to the Highway 249 corridor or a north-Houston clinic needs the full pickup and destination details. Give the facility\'s check-in time so an outward plan can be agreed. We do not guarantee travel times or immediate availability.'),
+  ('Match recurring rides to the actual center', 'For dialysis or rehabilitation, confirm that each appointment uses the same address. Share the schedule, date range and exceptions, then record the dates we accept. Our one-van schedule means a location on this page does not reserve a recurring slot.'),
+  ('Prepare the right post-procedure handoff', 'Ask the surgery center who must accompany the passenger and whether that adult must remain with them afterward. A driver does not automatically satisfy a responsible-adult discharge requirement. Confirm the return exit and contact process before the appointment.'),
+  ('Ask about the whole route', 'Discuss boarding assistance, wheelchair fit, any companion, the outward ride and the return before agreeing to the private-pay fare. For destinations outside Houston, ask separately rather than inferring coverage from the corridor name. Facility references do not imply affiliation or a Ride Primetime branch.')],
+ 'source':('Houston Methodist: Willowbrook location and campus resources','https://www.houstonmethodist.org/locations/willowbrook/')},
+})

@@ -96,7 +96,7 @@ PAGES=apply_content(PAGES)
 PAGE_TITLES.update(TITLES)
 
 def topic_links():
-    return '<div class="topic-links">'+''.join(f'<a href="{route(slug)}">{escape(label)}</a>' for slug,label in TOPICS)+'</div>'
+    return '<div class="location-links">'+''.join(f'<a href="{route(slug)}">{escape(label)}</a>' for slug,label in TOPICS)+'</div>'
 
 def location_links():
     return '<nav class="location-links" aria-label="Related locations">'+''.join(f'<a href="{route("service-areas-covered/"+key)}">{escape(loc["name"])}</a>' for key,loc in LOCATIONS.items())+'</nav><p class="related-links"><a href="'+route('services/wheelchair-transportation')+'">Wheelchair service</a> · <a href="'+route('book-today')+'">Plan your trip</a> · <a href="'+route('faqs')+'">Booking questions</a></p>'
@@ -122,7 +122,7 @@ for slug,title,kicker,desc,items in PAGES:
     if slug.startswith('service-areas-covered'):
         loc=LOCATIONS.get(slug.rsplit('/',1)[-1],{})
         source=loc.get('source')
-        note=f'<p class="fine">Local geography: <a href="{source[1]}">{escape(source[0])}</a>. Geographic context does not establish a business affiliation or guaranteed availability.</p>' if source else ''
+        note=f'<p class="fine">Local reference: <a href="{source[1]}">{escape(source[0])}</a>. Geographic context does not establish a business affiliation or guaranteed availability.</p>' if source else ''
         body+=f'<section class="wrap section prose"><h2>Explore local trip planning</h2>{location_links()}{note}</section>'
     if slug.startswith('services') or slug == 'service-areas-covered':
         body+=f'<section class="section wrap prose"><h2>Plan your next step</h2>{topic_links()}<p><a href="{BOOK}">Request availability and a private-pay quote</a></p></section>'
