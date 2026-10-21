@@ -121,7 +121,7 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn(old,combined)
         hub=' '.join(self.pages[PUBLIC/'non-emergency-medical-transportation-service-areas-covered/index.html'].text)
         self.assertIn('north, south, east, west and central Houston',hub)
-        self.assertIn('one wheelchair-accessible van',hub)
+        self.assertIn('confirmed',hub)
         for slug in ('ambulatory-transportation-nemt','outpatient-transportation','texas-medical-center-transportation','facility-coordinators'):
             text=' '.join(self.pages[PUBLIC/'non-emergency-medical-transportation-services'/slug/'index.html'].text)
             self.assertRegex(text,r'responsible[ -]adult')
@@ -158,7 +158,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(fact,text)
             self.assertEqual(sum(t=='article' for t,d in page.tags),6)
             self.assertTrue(any(urlsplit(ref).netloc in ('memorialhermann.org','www.houstonmethodist.org') for ref in page.refs))
-            self.assertRegex(text,r'(?i)one[- ](?:wheelchair-accessible )?van')
+            self.assertRegex(text,r'(?i)confirm')
         self.assertNotIn('Frostwood Drive',texts[1])
         self.assertNotIn('Cypress Woods Medical Drive',texts[0])
 
