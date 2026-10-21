@@ -1,3 +1,17 @@
+# Ride Primetime vehicle showcase release
+
+Pending independent visual review and publication. The illustrated homepage hero precedes a section with the two approved vehicle photos. Explore Our Vehicle links from the shared desktop/mobile navigation to /our-vehicle/. Existing Houston content and routes remain intact.
+
+This isolated release was reconstructed from verified photo tree fa903566be5dc5c5d7f77c90e861437ef3735db9. Remote main was checked as d5db466166e3bbf9f20409dbfb58031e3e4f59ea on October 21, 2026. The earlier photo commit creation remains uncertain; no duplicate of that commit was created. A future distinct showcase commit must use a freshly verified main parent.
+
+The inquiry prototype remains in the original local workspace and Library preview, entirely outside this release. No inquiry.py, inquiry CSS/JS, online form, Maps integration or email backend is included. DNS remains on hold; deploy only to rideprimetime-b0793 after review. The regular domains still serve the older site.
+
+Build: python build.py. Tests: python -m unittest discover -s tests -v; node tests/menu.test.cjs. Browser screenshots and real keyboard checks are separate release gates, not covered by these tests.
+
+Rollback: retain published Hosting version 58c02f117f159a54 and photo tree above. No old resources are deleted.
+
+---
+
 # Ride Primetime static website
 
 ## Houston-wide update — October 20, 2026

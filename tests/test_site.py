@@ -19,9 +19,9 @@ class SiteTests(unittest.TestCase):
         cls.pages={p:Page() for p in PUBLIC.rglob('*.html')}
         for p,parser in cls.pages.items():parser.feed(p.read_text(encoding='utf-8'))
     def test_page_count_and_sitemap(self):
-        self.assertEqual(len(self.pages),31) # 30 canonical routes plus 404
+        self.assertEqual(len(self.pages),32) # 31 canonical routes plus 404
         urls=[e.text for e in ET.parse(PUBLIC/'sitemap.xml').iter() if e.tag.endswith('loc')]
-        self.assertEqual(len(urls),30);self.assertEqual(len(set(urls)),30)
+        self.assertEqual(len(urls),31);self.assertEqual(len(set(urls)),31)
         for u in urls:self.assertTrue((PUBLIC/urlsplit(u).path.strip('/')/'index.html').is_file(),u)
     def test_all_local_references_resolve(self):
         for p,parser in self.pages.items():
@@ -54,10 +54,10 @@ class SiteTests(unittest.TestCase):
             self.assertFalse(any(t in ('form','iframe') for t,d in parser.tags),p)
             self.assertIn('not a confirmed reservation',' '.join(parser.text))
     def test_no_legacy_code_or_private_file_types(self):
-        allowed={'.html','.css','.js','.svg','.xml','.txt','.png'}
+        allowed={'.html','.css','.js','.svg','.xml','.txt','.png','.jpg'}
         for p in PUBLIC.rglob('*'):
             if p.is_file():self.assertIn(p.suffix,allowed,p)
-        combined='\n'.join(p.read_text(encoding='utf-8') for p in PUBLIC.rglob('*') if p.is_file() and p.suffix!='.png')
+        combined='\n'.join(p.read_text(encoding='utf-8') for p in PUBLIC.rglob('*') if p.is_file() and p.suffix not in ('.png','.jpg'))
         for marker in ('<?php','DB_PASSWORD','AUTH_KEY','BEGIN PRIVATE KEY','wp-config','admin-ajax.php','forminator_nonce','eval(','document.write(','innerHTML','fetch('):self.assertNotIn(marker,combined)
         for claim in ('Medicaid accepted','guaranteed on-time','our fleet','bariatric transport','stretcher transport','booking confirmed','submission successful'):self.assertNotIn(claim,combined)
     def test_no_third_party_active_resources(self):

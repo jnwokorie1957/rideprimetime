@@ -9,4 +9,14 @@
 - External requests: none made by page scripts or styles. Phone and email links open the visitor's chosen application.
 - A broad open-source license has not been assigned to the business brand or copy. Public visibility does not imply trademark or brand reuse permission.
 
-Unverified stock/vendor assets are excluded. The only reused bitmap is the business logo authorized for this owner website; rights for third-party reuse are not granted. The backup remains separately stored outside this repository.
+Unverified stock/vendor assets are excluded. The reused bitmaps are the owner-authorized business logo and vehicle display photos; rights for third-party reuse are not granted. The backup remains separately stored outside this repository.
+
+
+## Owner-authorized vehicle display photographs — October 20, 2026
+
+- Gallery supplied by the owner: https://Oparashotit.pixieset.com/primetimemedicalsolutions/
+- `public/assets/ride-primetime-van.jpg`: EOSR9378-2, https://images.pixieset.com/54092569/9c24f596caee34a99fa4f07e781f78db-xlarge.jpg
+- `public/assets/ride-primetime-ramp.jpg`: EOSR9425, https://images.pixieset.com/54092569/d52aeb659b2161b0b056986489faaf24-xlarge.jpg
+- Both are publicly accessible 1024 × 683 JPEG display assets, used under the owner's explicit website publication instruction. Gated originals were not requested or downloaded.
+- Pixels inspected locally: branded van, ramp and wheelchair; no people or visible photographer watermark. The hero's visible vehicle plate is retained. Files are unchanged, with no crop, retouching or watermark removal.
+- Full image proportions are preserved at mobile and desktop widths. Explicit dimensions prevent layout shift; the homepage photo has high fetch priority and the below-fold service photo loads lazily. Images are served locally without visitor requests to the gallery.

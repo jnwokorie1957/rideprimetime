@@ -8,3 +8,9 @@
 .utility a:focus-visible,.contact-band a:focus-visible{outline-color:#fff}
 .service-link{color:var(--blue);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}.service-link:hover{text-decoration-thickness:2px}
 
+
+/* Owner-authorized vehicle photos retain their full composition at every viewport. */
+.hero-art.vehicle-photo img{aspect-ratio:auto;object-fit:contain;width:100%;height:auto}.vehicle-caption{padding:20px 25px;font-size:14px}.vehicle-caption p{font-size:12px;color:var(--muted);margin:4px 0 0}
+
+/* Vehicle showcase: approved photographs remain uncropped. */
+.vehicle-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.vehicle-gallery figure{margin:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--pale)}.vehicle-gallery img{display:block;width:100%;height:auto;aspect-ratio:1024/683;object-fit:contain}.vehicle-gallery figcaption{padding:17px 22px;background:white;font-size:14px;font-weight:600}.vehicle-link{margin-top:28px}.vehicle-detail{padding-top:20px}.vehicle-planning{border:1px solid var(--line);border-radius:var(--radius);padding:30px;background:white}.vehicle-planning li{margin-bottom:12px}#navigation{gap:20px}@media(max-width:1100px) and (min-width:901px){.nav{gap:16px}#navigation{gap:13px}nav a{font-size:13px}nav .nav-contact{padding:12px}}@media(max-width:700px){.vehicle-gallery{grid-template-columns:1fr;gap:20px}.vehicle-gallery figcaption{padding:15px 18px}.vehicle-planning{padding:24px}}
