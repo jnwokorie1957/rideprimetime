@@ -1,3 +1,21 @@
+# Current release status — October 22, 2026
+
+Verified Git main: 8a78b46d2757d3be725d82f029332d21776f31fc. The vehicle showcase, fleet-neutral copy and equal homepage service choices are already committed. The metadata consistency patch is pending independent review.
+
+Fresh public HTTPS checks at 12:55 UTC confirm rideprimetime.net and www still serve the older site; the Medical Center and district routes checked return 404 there. Seven checked resources on rideprimetime-b0793.web.app exactly match the earlier photo tree fa903566be5dc5c5d7f77c90e861437ef3735db9. Git publication is not Hosting deployment. DNS remains held. Browser inventory is empty; real visual/keyboard QA is unresolved, so no deployment is attempted.
+
+The local inquiry prototype is excluded. Changes to Maps, email delivery, credentials, permissions and PTHHS are outside this release.
+
+SEO rationale: Google recommends concise descriptive titles and accurate page summaries. General-business titles should reflect both owner-confirmed services; wheelchair-specific service titles remain focused. No ranking or traffic improvement is claimed.
+
+- https://developers.google.com/search/docs/appearance/title-link
+- https://developers.google.com/search/docs/appearance/snippet
+- https://developers.google.com/search/docs/crawling-indexing/links-crawlable
+
+Historical notes below describe earlier states and are retained for rollback context.
+
+---
+
 # Ride Primetime vehicle showcase release
 
 Pending independent visual review and publication. The illustrated homepage hero precedes a section with the two approved vehicle photos. Explore Our Vehicle links from the shared desktop/mobile navigation to /our-vehicle/. Existing Houston content and routes remain intact.

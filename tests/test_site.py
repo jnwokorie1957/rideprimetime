@@ -100,7 +100,7 @@ class SiteTests(unittest.TestCase):
         for href,label in links:
             self.assertGreater(len(label),20)
             self.assertNotIn(label.lower(),('learn more','click here'))
-        for slug,term in [('services','Wheelchair Transportation Services'),('book-today','Quote'),('lets-connect','Contact'),('faqs','FAQs')]:
+        for slug,term in [('services','Wheelchair and Ambulatory Transportation Services'),('book-today','Quote'),('lets-connect','Contact'),('faqs','FAQs')]:
             source=(PUBLIC/('non-emergency-medical-transportation-'+slug)/'index.html').read_text(encoding='utf-8')
             self.assertIn(term,re.search(r'<title>(.*?)</title>',source).group(1))
     def test_location_coverage_and_redirects(self):
