@@ -19,7 +19,7 @@ class ArticleTests(unittest.TestCase):
         paths,pages=self.render([self.sample()])
         self.assertEqual(paths,['/articles/','/articles/test-topic/'])
         body=pages[paths[1]]
-        for text in ('Published by Primetime Medical Transportation / RidePrimetime','datetime="2026-10-27"','Text &lt;not markup&gt;',
+        for text in ('Published by Robert, AI CTO of Primetime Medical Transportation','datetime="2026-10-27"','Text &lt;not markup&gt;',
                      'https://example.org/reference','href="/articles/"'):
             self.assertIn(text,body)
         self.assertNotIn('reviewed by',body.lower())
@@ -36,7 +36,7 @@ class ArticleTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[1]/'public'
         path='/articles/smarter-medical-transportation-iteration/'
         page=(root/path.strip('/')/'index.html').read_text(encoding='utf-8')
-        for text in ('https://www.rideprimetime.net'+path,'Prepared with AI drafting assistance',
+        for text in ('https://www.rideprimetime.net'+path,'Published by Robert, AI CTO of Primetime Medical Transportation',
                      'Research checked 2026-10-27','hypothetical planning example',
                      'possible future improvements','not a claim about a currently deployed',
                      'https://www.w3.org/WAI/tutorials/forms/notifications/',
@@ -44,6 +44,8 @@ class ArticleTests(unittest.TestCase):
             self.assertIn(text,page)
         self.assertNotIn('25 years',page)
         self.assertNotIn('not yet published',page)
+        self.assertNotIn('Prepared with AI drafting assistance',page)
+        self.assertNotIn('"@type": "Person"',page)
         self.assertIn(path,(root/'sitemap.xml').read_text())
         self.assertIn(path,(root/'articles/index.html').read_text())
         self.assertIn('href="/articles/"',(root/'index.html').read_text())

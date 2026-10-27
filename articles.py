@@ -90,7 +90,7 @@ def render_articles(articles, document, write):
         references='<h2>Sources</h2><ul>'+sources+'</ul>' if sources else ''
         body=('<section class="page-hero wrap"><a class="breadcrumb" href="/articles/">Articles /</a>'
               '<p class="eyebrow">RIDE PRIMETIME ARTICLES</p><h1>'+title+'</h1><p class="lead">'+summary+'</p>'
-              '<p class="fine">Published by Primetime Medical Transportation / RidePrimetime. Prepared with AI drafting assistance.</p>'
+              '<p class="fine">Published by Robert, AI CTO of Primetime Medical Transportation</p>'
               '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.</p></section>'
               '<article class="section wrap prose">'+intro+sections+references+'</article>')
         write(path,document(article.get('seo_title',article['title']),article['summary'],path,body))
