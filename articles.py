@@ -17,7 +17,7 @@ def load_article():
     return dict(slug='smarter-medical-transportation-iteration',title=title.removeprefix('# '),
         seo_title='Smarter Medical Transportation Software',
         summary='How clearer ride requests, accessible forms and careful testing can improve transportation tools without promising unbuilt dispatch or tracking features.',
-        published_on='2026-10-27',research_on='2026-10-27',intro=blocks(parts[0]),
+        status='published',published_on='2026-10-27',research_on='2026-10-27',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[])
 
 ARTICLES = (load_article(),)
@@ -42,7 +42,20 @@ def block(text):
         return '<ul>'+''.join('<li>'+inline(line[2:])+'</li>' for line in lines)+'</ul>'
     return '<p>'+inline(text)+'</p>'
 
+def published_articles(articles, today=None):
+    """Only explicitly published entries whose publication date has arrived."""
+    today = today or date.today()
+    entries=[]
+    for article in articles:
+        status=article.get('status','draft')
+        if status not in ('draft','published'):
+            raise ValueError('Article status must be draft or published.')
+        if status == 'published' and date.fromisoformat(article['published_on']) <= today:
+            entries.append(article)
+    return entries
+
 def render_articles(articles, document, write):
+    articles=published_articles(articles)
     if not articles:
         return []
     seen=set()
@@ -89,3 +102,20 @@ def render_articles(articles, document, write):
           '<h1>Perspectives on planned transportation.</h1></section><section class="section wrap prose"><ul class="site-map">'
           +''.join(items)+'</ul></section>'))
     return [index]+paths
+
+def reconcile_article_output(public, paths):
+    """Remove stale generated article HTML, never editorial sources or other assets."""
+    public=Path(public).resolve()
+    archive=public/'articles'
+    if archive.is_symlink():
+        raise ValueError('Article output directory must not be a symbolic link.')
+    if not archive.exists():return
+    keep={public/path.strip('/')/'index.html' for path in paths}
+    candidates=[archive/'index.html']
+    for child in archive.iterdir():
+        if child.is_dir() and not child.is_symlink() and re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',child.name):
+            candidates.append(child/'index.html')
+    for page in candidates:
+        if page.is_symlink():raise ValueError('Article output must not be a symbolic link.')
+        if page.is_file() and page not in keep:
+            page.unlink()

@@ -1,3 +1,14 @@
+# Current release checkpoint — October 27, 2026
+
+Verified main before the Articles navigation change: a74082a3f7640476cc97cf1ccf77d652e69eddd0. The article was committed separately as 4452e7d7e704cc4b1b346614068eeaba31d1fca1 and published in Hosting version 1077fd3206efec64.
+
+The ordinary-domain cache remedy completed with version 20a58eab454cbd0c. The approved six-photo gallery, homepage photo removal and clearer quote guidance are now live in version 7901bccac4872da6, released October 27 at 17:01:25 UTC. Query-free apex, www and Firebase HTTPS checks matched all 47 public files at 17:02:43 UTC. Both custom domains have active ownership, hosting and certificates. Rollback is the article release 1077fd3206efec64.
+
+The separate Articles navigation update adds the existing /articles/ index to shared desktop/mobile navigation. Published registry entries populate the index and sitemap automatically; drafts, unmarked entries and future publication dates are excluded, with stale generated article HTML reconciled on rebuild. Independent review and 35 main / 34 production tests plus menu checks pass. Browser checks cover desktop, tablet and 390-pixel mobile navigation, index/article links and keyboard use; no physical touch-device test is claimed. Its live deployment approval is pending; Git publication alone does not deploy this static site.
+
+The request-planning change remains in main but is excluded from the production candidate. The inquiry prototype, Maps and email backend remain excluded. No DNS, IAM, credentials, billing or PTHHS changes are part of this release. Historical notes below describe earlier states and do not override this checkpoint.
+
+---
 # Current release status — October 22, 2026
 
 Verified Git main: 8a78b46d2757d3be725d82f029332d21776f31fc. The vehicle showcase, fleet-neutral copy and equal homepage service choices are already committed. The metadata consistency patch is pending independent review.

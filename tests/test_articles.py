@@ -4,7 +4,7 @@ from pathlib import Path
 
 class ArticleTests(unittest.TestCase):
     def sample(self):
-        return dict(slug='test-topic',title='Test & topic',summary='Test summary',published_on='2026-10-27',
+        return dict(status='published',slug='test-topic',title='Test & topic',summary='Test summary',published_on='2026-10-27',
                     sections=[('Heading',['Text <not markup>'])],sources=[('Official source','https://example.org/reference')])
 
     def render(self, entries):
@@ -53,3 +53,57 @@ class ArticleTests(unittest.TestCase):
         self.assertEqual(inline('<script>'), '&lt;script&gt;')
         self.assertNotIn('<a ',inline('[bad](javascript:alert)'))
         self.assertIn('&quot;',inline('[safe](https://example.org/"test)'))
+
+    def test_multiple_published_articles_and_drafts(self):
+        first=self.sample();second=dict(self.sample(),slug='second-topic',title='Second article')
+        draft=dict(self.sample(),slug='draft-topic',status='draft')
+        unmarked=dict(self.sample(),slug='unmarked');unmarked.pop('status')
+        future=dict(self.sample(),slug='future-topic',published_on='9999-12-31')
+        paths,pages=self.render([first,draft,second,unmarked,future])
+        self.assertEqual(paths,['/articles/','/articles/test-topic/','/articles/second-topic/'])
+        self.assertEqual(set(pages),set(paths))
+        for slug in ('test-topic','second-topic'):
+            self.assertIn('href="/articles/'+slug+'/"',pages['/articles/'])
+        for slug in ('draft-topic','unmarked','future-topic'):
+            self.assertNotIn(slug,''.join(pages.values()))
+        self.assertEqual(self.render([draft,unmarked,future]),([],{}))
+
+    def test_shared_navigation_has_one_article_index_link(self):
+        root=Path(__file__).resolve().parents[1]/'public'
+        for p in root.rglob('*.html'):
+            nav=p.read_text(encoding='utf-8').split('<nav id="navigation"')[1].split('</nav>')[0]
+            self.assertEqual(nav.count('href="/articles/">Articles</a>'),1,str(p))
+
+    def test_incremental_drafts_and_removed_entries_leave_no_generated_page(self):
+        from contextlib import contextmanager
+        from uuid import uuid4
+        import shutil
+        @contextmanager
+        def ordinary_workspace_directory():
+            parent=Path(__file__).resolve().parents[1]
+            folder=parent/('_article_test_'+uuid4().hex)
+            folder.mkdir()
+            try:yield folder
+            finally:
+                assert folder.resolve().parent == parent.resolve()
+                shutil.rmtree(folder)
+        from articles import reconcile_article_output
+        for replacement in ({'status':'draft'},{'published_on':'9999-12-31'},None):
+            with ordinary_workspace_directory() as folder:
+                public=Path(folder)
+                def write(path,body):
+                    page=public/path.strip('/')/'index.html'
+                    page.parent.mkdir(parents=True,exist_ok=True);page.write_text(body)
+                entry=self.sample()
+                paths=render_articles([entry],lambda t,s,p,b:b,write)
+                reconcile_article_output(public,paths)
+                self.assertTrue((public/'articles/test-topic/index.html').exists())
+                unrelated=public/'articles/notes.txt';unrelated.write_text('Keep this asset')
+                sibling=public/'privacy-policy/index.html';sibling.parent.mkdir();sibling.write_text('Keep this page')
+                next_entries=[] if replacement is None else [dict(entry,**replacement)]
+                paths=render_articles(next_entries,lambda t,s,p,b:b,write)
+                reconcile_article_output(public,paths)
+                self.assertFalse((public/'articles/test-topic/index.html').exists())
+                self.assertFalse((public/'articles/index.html').exists())
+                self.assertEqual(unrelated.read_text(),'Keep this asset')
+                self.assertEqual(sibling.read_text(),'Keep this page')
