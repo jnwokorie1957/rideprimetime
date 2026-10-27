@@ -20,3 +20,6 @@
 
 /* Keep vehicle photos close to their introduction without changing shared page spacing. */
 .vehicle-page-hero{padding-bottom:20px}.vehicle-showcase>p{max-width:760px}
+
+/* Prioritize full-frame ramp/interior views at their available image size. */
+.vehicle-gallery--detail figure:nth-child(-n+2){grid-column:1/-1;width:100%;max-width:1026px;justify-self:center}.vehicle-photo-link{display:block}.vehicle-photo-link:focus-visible{outline:3px solid var(--blue);outline-offset:-5px}

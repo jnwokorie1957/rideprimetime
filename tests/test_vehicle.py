@@ -43,4 +43,19 @@ class VehicleTests(unittest.TestCase):
             for claim in ('one van','one wheelchair','one-van','single-van','single vehicle','our only','our fleet'):
                 self.assertNotIn(claim,s,str(path))
 
+    def test_ramp_and_interior_are_first_and_open_original_photos(self):
+        import re
+        s=(PUBLIC/'our-vehicle/index.html').read_text(encoding='utf-8')
+        photos=re.findall(r'<a class="vehicle-photo-link" href="([^"]+)" aria-label="([^"]+)"><img src="([^"]+)"',s)
+        self.assertEqual(len(photos),6)
+        self.assertEqual([p[0] for p in photos[:2]],['/assets/ride-primetime-ramp-detail.jpg','/assets/ride-primetime-interior.jpg'])
+        for href,label,src in photos:
+            self.assertEqual(href,src);self.assertTrue(label.startswith('View full-size photo: '))
+            self.assertTrue((PUBLIC/src.lstrip('/')).is_file())
+        self.assertIn('vehicle-gallery--detail',s)
+        self.assertIn('Back button',s)
+        css=(PUBLIC/'assets/site.css').read_text(encoding='utf-8')
+        self.assertIn('max-width:1026px',css)
+        self.assertIn('object-fit:contain',css)
+
 if __name__=='__main__':unittest.main()
