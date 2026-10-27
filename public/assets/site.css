@@ -17,3 +17,6 @@
 
 /* Equal compact service links precede supporting copy at every width. */
 .hero-copy h1{font-size:clamp(40px,4.3vw,64px)}.hero-service-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 24px}.hero-service-choice{display:flex;flex-direction:column;justify-content:center;gap:8px;min-height:100px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);text-decoration:none;background:var(--paper)}.hero-service-choice:hover{border-color:var(--blue);background:var(--pale)}.hero-service-choice strong{font-size:18px;line-height:1.35;color:var(--ink)}.hero-service-choice .choice-action{font-size:14px;line-height:1.5;color:var(--blue);font-weight:650}.hero-service-choice:focus-visible{outline:3px solid var(--ink);outline-offset:4px}@media(max-width:420px){.hero-service-choices{gap:10px}.hero-service-choice{padding:12px 10px;border-radius:18px}.hero-service-choice strong{font-size:16px}}
+
+/* Keep vehicle photos close to their introduction without changing shared page spacing. */
+.vehicle-page-hero{padding-bottom:20px}.vehicle-showcase>p{max-width:760px}

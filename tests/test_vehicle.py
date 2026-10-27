@@ -9,12 +9,22 @@ class Images(HTMLParser):
         if t=='img':self.images.append(dict(a))
 
 class VehicleTests(unittest.TestCase):
-    def test_home_image_order_and_loading(self):
+    def test_home_keeps_illustration_and_links_to_dedicated_gallery(self):
         s=(PUBLIC/'index.html').read_text(encoding='utf-8');p=Images();p.feed(s)
-        self.assertEqual([i['src'] for i in p.images][1:],['/assets/journey.svg','/assets/ride-primetime-van.jpg','/assets/ride-primetime-ramp.jpg'])
-        for image in p.images[2:]:
-            self.assertEqual(image['loading'],'lazy');self.assertEqual(image['width'],'1024');self.assertEqual(image['height'],'683')
-        self.assertIn('href="/our-vehicle/"',s.split('</main>')[0])
+        self.assertEqual([i['src'] for i in p.images][1:],['/assets/journey.svg'])
+        self.assertIn('href="/our-vehicle/">Explore our vehicles',s.split('</main>')[0])
+
+    def test_six_distinct_uncropped_lazy_gallery_photos(self):
+        s=(PUBLIC/'our-vehicle/index.html').read_text(encoding='utf-8');p=Images();p.feed(s)
+        images=[i for i in p.images if '/ride-primetime-' in i['src'] and i['src'].endswith('.jpg')]
+        self.assertEqual(len(images),6);self.assertEqual(len({i['src'] for i in images}),6)
+        for i in images:
+            self.assertEqual(i['loading'],'lazy');self.assertEqual(i['decoding'],'async')
+            self.assertEqual((i['width'],i['height']),('1024','683'))
+            self.assertTrue(i['alt']);self.assertLess((PUBLIC/i['src'].lstrip('/')).stat().st_size,250000)
+        self.assertIn('<h1>Explore our vehicles</h1>',s)
+        self.assertIn('do not establish fit for every wheelchair',s)
+
     def test_shared_navigation_and_showcase(self):
         for path in PUBLIC.rglob('*.html'):
             s=path.read_text(encoding='utf-8');nav=s.split('<nav id="navigation"')[1].split('</nav>')[0]
