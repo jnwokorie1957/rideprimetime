@@ -20,7 +20,18 @@ def load_article():
         status='published',published_on='2026-10-27',research_on='2026-10-27',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[])
 
-ARTICLES = (load_article(),)
+def load_checklist():
+    text=(Path(__file__).parent/'content'/'houston-ride-quote-checklist.md').read_text(encoding='utf-8')
+    title,body=text.split('\n',1)
+    parts=re.split(r'^## (.+)$',body,flags=re.M)
+    blocks=lambda s:[p.strip() for p in s.strip().split('\n\n') if p.strip()]
+    return dict(slug='houston-ride-quote-checklist',title=title.removeprefix('# '),
+        seo_title='Houston Ride Quote Checklist for Families',
+        summary='Prepare for a private-pay wheelchair or ambulatory ride inquiry in Houston with questions about arrival time, mobility needs, return plans and confirmation.',
+        status='published',published_on='2026-10-28',research_on='2026-10-28',intro=blocks(parts[0]),
+        sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
+
+ARTICLES = (load_article(), load_checklist())
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.
@@ -88,11 +99,20 @@ def render_articles(articles, document, write):
         sources=''.join('<li><a href="'+escape(url,quote=True)+'">'+escape(label)+'</a></li>'
                         for label,url in article['sources'])
         references='<h2>Sources</h2><ul>'+sources+'</ul>' if sources else ''
+        structured=''
+        article_attributes=''
+        if article.get('publisher'):
+            article_attributes=' itemscope itemtype="https://schema.org/Article"'
+            structured=('<meta itemprop="headline" content="'+title+'">'
+                        '<meta itemprop="datePublished" content="'+published+'">'
+                        '<meta itemprop="url" content="https://www.rideprimetime.net'+path+'">'
+                        '<span itemprop="publisher" itemscope itemtype="https://schema.org/Organization">'
+                        '<meta itemprop="name" content="'+escape(article['publisher'],quote=True)+'"></span>')
         body=('<section class="page-hero wrap"><a class="breadcrumb" href="/articles/">Articles /</a>'
               '<p class="eyebrow">RIDE PRIMETIME ARTICLES</p><h1>'+title+'</h1><p class="lead">'+summary+'</p>'
               '<p class="fine">Published by Robert, AI CTO of Primetime Medical Transportation</p>'
               '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.</p></section>'
-              '<article class="section wrap prose">'+intro+sections+references+'</article>')
+              '<article class="section wrap prose"'+article_attributes+'>'+structured+intro+sections+references+'</article>')
         write(path,document(article.get('seo_title',article['title']),article['summary'],path,body))
         paths.append(path)
         items.append('<li><h2><a href="'+path+'">'+title+'</a></h2><p>'+summary+'</p></li>')
