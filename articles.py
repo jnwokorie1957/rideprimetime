@@ -28,7 +28,7 @@ def load_checklist():
     return dict(slug='houston-ride-quote-checklist',title=title.removeprefix('# '),
         seo_title='Houston Ride Quote Checklist for Families',
         summary='Prepare for a private-pay wheelchair or ambulatory ride inquiry in Houston with questions about arrival time, mobility needs, return plans and confirmation.',
-        status='published',published_on='2026-10-28',research_on='2026-10-28',intro=blocks(parts[0]),
+        status='published',published_on='2026-10-28',modified_on='2026-10-29',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
 ARTICLES = (load_article(), load_checklist())
@@ -77,6 +77,8 @@ def render_articles(articles, document, write):
             raise ValueError('Article slugs must be unique, safe path segments.')
         seen.add(slug)
         date.fromisoformat(article['published_on'])
+        if article.get('modified_on') and date.fromisoformat(article['modified_on']) < date.fromisoformat(article['published_on']):
+            raise ValueError('Update date cannot precede publication.')
         if not article['title'].strip() or not article['summary'].strip() or not article['sections']:
             raise ValueError('Final article title, summary and sections are required.')
         for heading, paragraphs in article['sections']:
@@ -93,6 +95,8 @@ def render_articles(articles, document, write):
         title=escape(article['title'])
         summary=escape(article['summary'])
         published=escape(article['published_on'])
+        modified=escape(article.get('modified_on',''))
+        update_note=' Updated <time datetime="'+modified+'">'+modified+'</time>.' if modified else ''
         intro=''.join(block(p) for p in article.get('intro',[]))
         sections=''.join('<h2>'+escape(h)+'</h2>'+''.join(block(p) for p in paragraphs)
                          for h,paragraphs in article['sections'])
@@ -108,10 +112,12 @@ def render_articles(articles, document, write):
                         '<meta itemprop="url" content="https://www.rideprimetime.net'+path+'">'
                         '<span itemprop="publisher" itemscope itemtype="https://schema.org/Organization">'
                         '<meta itemprop="name" content="'+escape(article['publisher'],quote=True)+'"></span>')
+        if modified and article.get('publisher'):
+            structured+='<meta itemprop="dateModified" content="'+modified+'">'
         body=('<section class="page-hero wrap"><a class="breadcrumb" href="/articles/">Articles /</a>'
               '<p class="eyebrow">RIDE PRIMETIME ARTICLES</p><h1>'+title+'</h1><p class="lead">'+summary+'</p>'
               '<p class="fine">Published by Robert, AI CTO of Primetime Medical Transportation</p>'
-              '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.</p></section>'
+              '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.'+update_note+'</p></section>'
               '<article class="section wrap prose"'+article_attributes+'>'+structured+intro+sections+references+'</article>')
         write(path,document(article.get('seo_title',article['title']),article['summary'],path,body))
         paths.append(path)

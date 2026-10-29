@@ -19,3 +19,16 @@ class ChecklistTests(unittest.TestCase):
             self.assertIn(route,(root/file).read_text(encoding='utf-8'))
         self.assertIn('/articles/smarter-medical-transportation-iteration/',(root/'articles/index.html').read_text(encoding='utf-8'))
         self.assertIn('A quote or inquiry alone is not a confirmed reservation.',page)
+
+    def test_return_guidance_keeps_publication_and_marks_update(self):
+        page=(Path(__file__).resolve().parents[1]/'public/articles/houston-ride-quote-checklist/index.html').read_text(encoding='utf-8')
+        self.assertIn('itemprop="datePublished" content="2026-10-28"',page)
+        self.assertIn('itemprop="dateModified" content="2026-10-29"',page)
+        self.assertIn('Updated <time datetime="2026-10-29">2026-10-29</time>',page)
+        section=page.split('<h2>Give the return journey its own questions</h2>')[1].split('<h2>Keep a short planning note</h2>')[0]
+        for text in ('hypothetical call opening','href="https://www.rideprimetime.net/">planning steps</a>',
+                     'and through which channel?','appointment takes longer than expected?',
+                     'Keep an estimated finish time separate from an agreed pickup time',
+                     'should not be taken as confirmation of a return arrangement',
+                     'do not imply that a vehicle waits'):
+            self.assertIn(text,section)

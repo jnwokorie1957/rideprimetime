@@ -22,17 +22,23 @@ If a companion will travel, include that in the inquiry. Ask whether there is sp
 
 ## Give the return journey its own questions
 
-Knowing when an appointment begins does not necessarily tell you when the rider will be ready to leave. If the return time is uncertain, explain that when asking about the outward trip.
+An appointment's start time does not tell you when the rider will be ready to leave. If the return time is uncertain, say so while discussing the outward trip. RidePrimetime's [planning steps](https://www.rideprimetime.net/) ask riders to discuss return needs and agree on arrangements with staff before travel.
 
-Ask:
+A hypothetical call opening could be: “I know when we need to arrive, but I do not know when the appointment will finish. Can we discuss whether a return trip can be arranged and what we would need to confirm?”
+
+Then ask:
 
 - How should an uncertain return time be handled?
-- Who should contact whom when the rider is ready?
+- Who should contact whom when the rider is ready, and through which channel?
 - Where would the return pickup take place?
-- What happens if the timing changes?
+- What should we do if the appointment takes longer than expected?
 - What return arrangements, if any, are included in the quoted price?
 
-These questions do not imply that a vehicle waits at the destination or that an immediate return ride is available. Those details need an answer from the provider.
+Keep an estimated finish time separate from an agreed pickup time in your notes. If the office gives instructions for contacting it later, record those instructions rather than treating the estimate as a reservation.
+
+Before ending the conversation, check whether the return trip is confirmed or still needs further discussion. An agreed outward trip should not be taken as confirmation of a return arrangement that has not been discussed and accepted.
+
+These questions do not imply that a vehicle waits at the destination or that an immediate return ride is available. Ask the provider to explain the arrangements it can actually offer.
 
 ## Keep a short planning note
 
