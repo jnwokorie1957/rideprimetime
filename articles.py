@@ -17,7 +17,7 @@ def load_article():
     return dict(slug='smarter-medical-transportation-iteration',title=title.removeprefix('# '),
         seo_title='Smarter Medical Transportation Software',
         summary='How clearer ride requests, accessible forms and careful testing can improve transportation tools without promising unbuilt dispatch or tracking features.',
-        status='published',published_on='2026-10-27',research_on='2026-10-27',intro=blocks(parts[0]),
+        status='published',published_on='2026-10-27',modified_on='2026-10-29',research_on='2026-10-27',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[])
 
 def load_checklist():
@@ -49,6 +49,8 @@ def inline(text):
 
 def block(text):
     lines=text.splitlines()
+    if len(lines)==1 and text.startswith('### '):
+        return '<h3>'+inline(text[4:])+'</h3>'
     if all(line.startswith('- ') for line in lines):
         return '<ul>'+''.join('<li>'+inline(line[2:])+'</li>' for line in lines)+'</ul>'
     return '<p>'+inline(text)+'</p>'

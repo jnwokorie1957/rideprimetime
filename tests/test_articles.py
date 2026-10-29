@@ -109,3 +109,19 @@ class ArticleTests(unittest.TestCase):
                 self.assertFalse((public/'articles/index.html').exists())
                 self.assertEqual(unrelated.read_text(),'Keep this asset')
                 self.assertEqual(sibling.read_text(),'Keep this page')
+
+    def test_testing_plan_hierarchy_and_hypothetical_boundaries(self):
+        from articles import block
+        page=(Path(__file__).resolve().parents[1]/'public/articles/smarter-medical-transportation-iteration/index.html').read_text(encoding='utf-8')
+        section=page.split('<h2>Before adding a feature, write down what should happen</h2>')[1].split('<h2>Treat wheelchair suitability')[0]
+        self.assertEqual(section.count('<h3>'),6)
+        self.assertNotIn('### ',section)
+        for value in ('hypothetical future inquiry tool using invented test details','not descriptions of a live RidePrimetime',
+                      'Receipt established, arrangements unconfirmed','Receipt cannot be established',
+                      'not live RidePrimetime notices','https://www.w3.org/WAI/tutorials/forms/validation/',
+                      'https://www.w3.org/WAI/test-evaluate/preliminary/'):
+            self.assertIn(value,section)
+        self.assertIn('Published <time datetime="2026-10-27">2026-10-27</time>',page)
+        self.assertIn('Updated <time datetime="2026-10-29">2026-10-29</time>',page)
+        self.assertEqual(block('### <script>'),'<h3>&lt;script&gt;</h3>')
+        self.assertEqual(block('ordinary paragraph'),'<p>ordinary paragraph</p>')
