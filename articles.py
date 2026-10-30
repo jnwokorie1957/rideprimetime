@@ -28,7 +28,7 @@ def load_checklist():
     return dict(slug='houston-ride-quote-checklist',title=title.removeprefix('# '),
         seo_title='Houston Ride Quote Checklist for Families',
         summary='Prepare for a private-pay wheelchair or ambulatory ride inquiry in Houston with questions about arrival time, mobility needs, return plans and confirmation.',
-        status='published',published_on='2026-10-28',modified_on='2026-10-29',research_on='2026-10-28',intro=blocks(parts[0]),
+        status='published',published_on='2026-10-28',modified_on='2026-10-30',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
 ARTICLES = (load_article(), load_checklist())

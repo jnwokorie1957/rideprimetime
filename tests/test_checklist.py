@@ -23,8 +23,8 @@ class ChecklistTests(unittest.TestCase):
     def test_return_guidance_keeps_publication_and_marks_update(self):
         page=(Path(__file__).resolve().parents[1]/'public/articles/houston-ride-quote-checklist/index.html').read_text(encoding='utf-8')
         self.assertIn('itemprop="datePublished" content="2026-10-28"',page)
-        self.assertIn('itemprop="dateModified" content="2026-10-29"',page)
-        self.assertIn('Updated <time datetime="2026-10-29">2026-10-29</time>',page)
+        self.assertIn('itemprop="dateModified" content="2026-10-30"',page)
+        self.assertIn('Updated <time datetime="2026-10-30">2026-10-30</time>',page)
         section=page.split('<h2>Give the return journey its own questions</h2>')[1].split('<h2>Keep a short planning note</h2>')[0]
         for text in ('hypothetical call opening','href="https://www.rideprimetime.net/">planning steps</a>',
                      'and through which channel?','appointment takes longer than expected?',
@@ -32,3 +32,16 @@ class ChecklistTests(unittest.TestCase):
                      'should not be taken as confirmation of a return arrangement',
                      'do not imply that a vehicle waits'):
             self.assertIn(text,section)
+
+    def test_photos_inform_questions_not_suitability(self):
+        root=Path(__file__).resolve().parents[1]/'public'
+        page=(root/'articles/houston-ride-quote-checklist/index.html').read_text(encoding='utf-8')
+        section=page.split('<h2>Explain how the rider will travel</h2>')[1].split('<h2>Give the return journey')[0]
+        for value in ('href="https://www.rideprimetime.net/our-vehicle/"','passenger seating and rear-ramp views',
+                      'Ask what measurements or other equipment details the provider needs',
+                      'A photograph alone cannot establish suitability for every wheelchair or passenger',
+                      'If a companion will travel'):
+            self.assertIn(value,section)
+        gallery=(root/'our-vehicle/index.html').read_text(encoding='utf-8')
+        self.assertIn('Your wheelchair dimensions and boarding needs.',gallery)
+        self.assertIn('Select a photo to enlarge it.',gallery)

@@ -16,7 +16,11 @@ For a Texas Medical Center visit, check the campus's [Updates and Alerts](https:
 
 Tell the provider whether you are asking about travel in a wheelchair or in a passenger seat. Mention mobility aids and the boarding assistance you want to discuss. If you are unsure which service is suitable, say so instead of selecting an option by guesswork.
 
-A useful question is: “What information do you need to check whether this trip and boarding arrangement can be accommodated?” Let the provider explain what it can offer.
+You can review [RidePrimetime’s vehicle photos](https://www.rideprimetime.net/our-vehicle/) before the conversation. The page shows exterior, passenger seating and rear-ramp views, with photos that can be enlarged. Use them to identify questions about the vehicle, rather than to decide for yourself that a wheelchair or passenger will fit.
+
+The vehicle page asks riders to discuss wheelchair dimensions and boarding needs directly. Ask what measurements or other equipment details the provider needs, and how to provide them. If you do not know an answer, explain that instead of guessing.
+
+A useful question is: “What do you still need to check before you can confirm that this vehicle and boarding arrangement are suitable for our trip?” A photograph alone cannot establish suitability for every wheelchair or passenger.
 
 If a companion will travel, include that in the inquiry. Ask whether there is space and whether it changes the quote. Do not assume that a companion, equipment or a particular kind of assistance is included without discussing it.
 
