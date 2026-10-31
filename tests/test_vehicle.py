@@ -26,7 +26,7 @@ class VehicleTests(unittest.TestCase):
         self.assertIn('do not establish fit for every wheelchair',s)
 
     def test_shared_navigation_and_showcase(self):
-        for path in PUBLIC.rglob('*.html'):
+        for path in (x for x in PUBLIC.rglob('*.html') if not x.name.startswith('google')):
             s=path.read_text(encoding='utf-8');nav=s.split('<nav id="navigation"')[1].split('</nav>')[0]
             self.assertEqual(nav.count('href="/our-vehicle/"'),1,str(path))
         s=(PUBLIC/'our-vehicle/index.html').read_text(encoding='utf-8')
@@ -34,11 +34,11 @@ class VehicleTests(unittest.TestCase):
             self.assertIn(text,s if text!='confirmed individually' else (PUBLIC/'index.html').read_text(encoding='utf-8'))
     def test_no_inquiry_prototype_in_release(self):
         self.assertEqual(list(PUBLIC.rglob('*inquiry*')),[])
-        for path in PUBLIC.rglob('*.html'):
+        for path in (x for x in PUBLIC.rglob('*.html') if not x.name.startswith('google')):
             self.assertNotIn('<form',path.read_text(encoding='utf-8'))
 
     def test_no_fleet_count_claims(self):
-        for path in PUBLIC.rglob('*.html'):
+        for path in (x for x in PUBLIC.rglob('*.html') if not x.name.startswith('google')):
             s=path.read_text(encoding='utf-8').lower()
             for claim in ('one van','one wheelchair','one-van','single-van','single vehicle','our only','our fleet'):
                 self.assertNotIn(claim,s,str(path))

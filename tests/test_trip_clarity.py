@@ -13,7 +13,7 @@ class TripClarityTests(unittest.TestCase):
         self.assertIn('href="/non-emergency-medical-transportation-book-today/">Request a ride quote',text)
         self.assertNotIn('<form',text)
     def test_vehicle_route_and_plural_navigation_are_consistent(self):
-        for p in PUBLIC.rglob('*.html'):
+        for p in (x for x in PUBLIC.rglob('*.html') if not x.name.startswith('google')):
             text=p.read_text(encoding='utf-8')
             nav=text.split('<nav id="navigation"')[1].split('</nav>')[0]
             self.assertIn('href="/our-vehicle/">Explore our vehicles',nav)

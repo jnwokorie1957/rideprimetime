@@ -72,7 +72,7 @@ class ArticleTests(unittest.TestCase):
 
     def test_shared_navigation_has_one_article_index_link(self):
         root=Path(__file__).resolve().parents[1]/'public'
-        for p in root.rglob('*.html'):
+        for p in (x for x in root.rglob('*.html') if not x.name.startswith('google')):
             nav=p.read_text(encoding='utf-8').split('<nav id="navigation"')[1].split('</nav>')[0]
             self.assertEqual(nav.count('href="/articles/">Articles</a>'),1,str(p))
 

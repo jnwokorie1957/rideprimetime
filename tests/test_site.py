@@ -16,7 +16,7 @@ class Page(HTMLParser):
 class SiteTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pages={p:Page() for p in PUBLIC.rglob('*.html')}
+        cls.pages={p:Page() for p in PUBLIC.rglob('*.html') if not p.name.startswith('google')}
         for p,parser in cls.pages.items():parser.feed(p.read_text(encoding='utf-8'))
     def test_page_count_and_sitemap(self):
         self.assertEqual(len(self.pages),35) # 34 canonical routes plus 404
