@@ -31,7 +31,26 @@ def load_checklist():
         status='published',published_on='2026-10-28',modified_on='2026-10-30',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
-ARTICLES = (load_article(), load_checklist())
+def load_planning_article(slug, seo_title, summary, research_on):
+    text = (Path(__file__).parent / 'content' / (slug + '.md')).read_text(encoding='utf-8')
+    title, body = text.split('\n', 1)
+    parts = re.split(r'^## (.+)$', body, flags=re.M)
+    blocks = lambda value: [p.strip() for p in value.strip().split('\n\n') if p.strip()]
+    return dict(slug=slug, title=title.removeprefix('# '), seo_title=seo_title,
+                summary=summary, status='published', published_on='2026-11-02',
+                research_on=research_on, intro=blocks(parts[0]),
+                sections=[(parts[i], blocks(parts[i+1])) for i in range(1, len(parts), 2)],
+                sources=[], publisher='Primetime Medical Transportation')
+
+ARTICLES = (load_article(), load_checklist(),
+    load_planning_article('bringing-a-companion-on-a-medical-ride-in-houston',
+        'Bringing a Companion on a Medical Ride in Houston',
+        "Plan a companion's medical ride in Houston with clear roles, one-way or round-trip details, meeting points, contact plans, and questions to confirm.",
+        '2026-10-31'),
+    load_planning_article('planning-recurring-medical-rides-houston',
+        'Planning Recurring Medical Rides in Houston',
+        'Keep repeated Houston medical rides clear with a date-by-date family note for confirmations, return trips, schedule exceptions and changes.',
+        '2026-11-01'))
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.
@@ -67,6 +86,12 @@ def published_articles(articles, today=None):
             entries.append(article)
     return entries
 
+def article_document(document, title, summary, path, body):
+    """Style article outputs only; leave the common document shell untouched."""
+    page = document(title, summary, path, body)
+    return page.replace('</head>', '<link rel="stylesheet" href="/assets/articles.css?v=20261102">\n</head>', 1)
+
+
 def render_articles(articles, document, write):
     articles=published_articles(articles)
     if not articles:
@@ -100,8 +125,10 @@ def render_articles(articles, document, write):
         modified=escape(article.get('modified_on',''))
         update_note=' Updated <time datetime="'+modified+'">'+modified+'</time>.' if modified else ''
         intro=''.join(block(p) for p in article.get('intro',[]))
-        sections=''.join('<h2>'+escape(h)+'</h2>'+''.join(block(p) for p in paragraphs)
-                         for h,paragraphs in article['sections'])
+        sections=''.join('<h2 id="section-'+str(i)+'">'+escape(h)+'</h2>'+''.join(block(p) for p in paragraphs)
+                         for i,(h,paragraphs) in enumerate(article['sections'],1))
+        contents='<nav class="article-toc" aria-label="In this article"><p class="article-toc-label">In this article</p><ol>'+''.join(
+            '<li><a href="#section-'+str(i)+'">'+escape(h)+'</a></li>' for i,(h,_) in enumerate(article['sections'],1))+'</ol></nav>'
         sources=''.join('<li><a href="'+escape(url,quote=True)+'">'+escape(label)+'</a></li>'
                         for label,url in article['sources'])
         references='<h2>Sources</h2><ul>'+sources+'</ul>' if sources else ''
@@ -116,18 +143,18 @@ def render_articles(articles, document, write):
                         '<meta itemprop="name" content="'+escape(article['publisher'],quote=True)+'"></span>')
         if modified and article.get('publisher'):
             structured+='<meta itemprop="dateModified" content="'+modified+'">'
-        body=('<section class="page-hero wrap"><a class="breadcrumb" href="/articles/">Articles /</a>'
+        body=('<section class="page-hero wrap article-hero"><a class="breadcrumb" href="/articles/">Articles /</a>'
               '<p class="eyebrow">RIDE PRIMETIME ARTICLES</p><h1>'+title+'</h1><p class="lead">'+summary+'</p>'
-              '<p class="fine">Published by Robert, AI CTO of Primetime Medical Transportation</p>'
-              '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.'+update_note+'</p></section>'
-              '<article class="section wrap prose"'+article_attributes+'>'+structured+intro+sections+references+'</article>')
-        write(path,document(article.get('seo_title',article['title']),article['summary'],path,body))
+              '<div class="article-meta"><p class="fine">Published by Robert, CTO of Primetime Medical Transportation</p>'
+              '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.'+update_note+'</p></div></section>'
+              '<article class="section wrap prose article-prose"'+article_attributes+'>'+structured+intro+contents+sections+references+'<p class="article-back"><a href="/articles/">Back to all articles <span aria-hidden="true">↗</span></a></p></article>')
+        write(path,article_document(document,article.get('seo_title',article['title']),article['summary'],path,body))
         paths.append(path)
-        items.append('<li><h2><a href="'+path+'">'+title+'</a></h2><p>'+summary+'</p></li>')
+        items.append('<li><p class="article-card-meta">Article <span aria-hidden="true">·</span> <time datetime="'+published+'">'+published+'</time></p><h2><a href="'+path+'">'+title+'<span class="article-card-arrow" aria-hidden="true">↗</span></a></h2><p>'+summary+'</p></li>')
     index='/articles/'
-    write(index,document('Articles','Planning and service perspectives from Ride Primetime.',index,
-          '<section class="page-hero wrap"><a class="breadcrumb" href="/">Home /</a><p class="eyebrow">ARTICLES</p>'
-          '<h1>Perspectives on planned transportation.</h1></section><section class="section wrap prose"><ul class="site-map">'
+    write(index,article_document(document,'Articles','Planning and service perspectives from Ride Primetime.',index,
+          '<section class="page-hero wrap article-hero"><a class="breadcrumb" href="/">Home /</a><p class="eyebrow">ARTICLES</p>'
+          '<h1>Perspectives on planned transportation.</h1><p class="lead">Practical guides for riders, families and the people helping plan the journey.</p></section><section class="section wrap prose article-prose article-index"><ul class="article-list">'
           +''.join(items)+'</ul></section>'))
     return [index]+paths
 

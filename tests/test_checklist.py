@@ -1,3 +1,4 @@
+import re
 import unittest
 from pathlib import Path
 from html.parser import HTMLParser
@@ -7,14 +8,14 @@ class ChecklistTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[1]/'public'
         route='/articles/houston-ride-quote-checklist/'
         page=(root/route.strip('/')/'index.html').read_text(encoding='utf-8')
-        for value in ('Published by Robert, AI CTO of Primetime Medical Transportation','datetime="2026-10-28"',
+        for value in ('Published by Robert, CTO of Primetime Medical Transportation','datetime="2026-10-28"',
             '713-423-4430','hypothetical preparation note','https://www.tmc.edu/operations/tmc-campus/updates-and-alerts/',
             'https://www.rideprimetime.net'+route,'https://schema.org/Organization','itemprop="name" content="Primetime Medical Transportation"'):
             self.assertIn(value,page)
         for value in ('Unpublished article draft','Editorial handoff','Prepared with AI drafting assistance','25 years','https://schema.org/Person'):
             self.assertNotIn(value,page)
         self.assertEqual(page.count('<h1>'),1)
-        self.assertEqual(page.count('<h2>'),7) # six editorial sections and shared contact heading
+        self.assertEqual(len(re.findall(r'<h2(?:\s[^>]*)?>', page)),7) # six editorial sections and shared contact heading
         for file in ['articles/index.html','sitemap.xml']:
             self.assertIn(route,(root/file).read_text(encoding='utf-8'))
         self.assertIn('/articles/smarter-medical-transportation-iteration/',(root/'articles/index.html').read_text(encoding='utf-8'))
@@ -25,7 +26,7 @@ class ChecklistTests(unittest.TestCase):
         self.assertIn('itemprop="datePublished" content="2026-10-28"',page)
         self.assertIn('itemprop="dateModified" content="2026-10-30"',page)
         self.assertIn('Updated <time datetime="2026-10-30">2026-10-30</time>',page)
-        section=page.split('<h2>Give the return journey its own questions</h2>')[1].split('<h2>Keep a short planning note</h2>')[0]
+        section=re.sub(r'<h2(?:\s[^>]*)?>', '<h2>', page).split('<h2>Give the return journey its own questions</h2>')[1].split('<h2>Keep a short planning note</h2>')[0]
         for text in ('hypothetical call opening','href="https://www.rideprimetime.net/">planning steps</a>',
                      'and through which channel?','appointment takes longer than expected?',
                      'Keep an estimated finish time separate from an agreed pickup time',
@@ -36,7 +37,7 @@ class ChecklistTests(unittest.TestCase):
     def test_photos_inform_questions_not_suitability(self):
         root=Path(__file__).resolve().parents[1]/'public'
         page=(root/'articles/houston-ride-quote-checklist/index.html').read_text(encoding='utf-8')
-        section=page.split('<h2>Explain how the rider will travel</h2>')[1].split('<h2>Give the return journey')[0]
+        section=re.sub(r'<h2(?:\s[^>]*)?>', '<h2>', page).split('<h2>Explain how the rider will travel</h2>')[1].split('<h2>Give the return journey')[0]
         for value in ('href="https://www.rideprimetime.net/our-vehicle/"','passenger seating and rear-ramp views',
                       'Ask what measurements or other equipment details the provider needs',
                       'A photograph alone cannot establish suitability for every wheelchair or passenger',

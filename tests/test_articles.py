@@ -1,3 +1,4 @@
+import re
 import unittest
 from articles import render_articles, ARTICLES, inline
 from pathlib import Path
@@ -19,7 +20,7 @@ class ArticleTests(unittest.TestCase):
         paths,pages=self.render([self.sample()])
         self.assertEqual(paths,['/articles/','/articles/test-topic/'])
         body=pages[paths[1]]
-        for text in ('Published by Robert, AI CTO of Primetime Medical Transportation','datetime="2026-10-27"','Text &lt;not markup&gt;',
+        for text in ('Published by Robert, CTO of Primetime Medical Transportation','datetime="2026-10-27"','Text &lt;not markup&gt;',
                      'https://example.org/reference','href="/articles/"'):
             self.assertIn(text,body)
         self.assertNotIn('reviewed by',body.lower())
@@ -36,7 +37,7 @@ class ArticleTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[1]/'public'
         path='/articles/smarter-medical-transportation-iteration/'
         page=(root/path.strip('/')/'index.html').read_text(encoding='utf-8')
-        for text in ('https://www.rideprimetime.net'+path,'Published by Robert, AI CTO of Primetime Medical Transportation',
+        for text in ('https://www.rideprimetime.net'+path,'Published by Robert, CTO of Primetime Medical Transportation',
                      'Research checked 2026-10-27','hypothetical planning example',
                      'possible future improvements','not a claim about a currently deployed',
                      'https://www.w3.org/WAI/tutorials/forms/notifications/',
@@ -113,7 +114,7 @@ class ArticleTests(unittest.TestCase):
     def test_testing_plan_hierarchy_and_hypothetical_boundaries(self):
         from articles import block
         page=(Path(__file__).resolve().parents[1]/'public/articles/smarter-medical-transportation-iteration/index.html').read_text(encoding='utf-8')
-        section=page.split('<h2>Before adding a feature, write down what should happen</h2>')[1].split('<h2>Treat wheelchair suitability')[0]
+        section=re.sub(r'<h2(?:\s[^>]*)?>', '<h2>', page).split('<h2>Before adding a feature, write down what should happen</h2>')[1].split('<h2>Treat wheelchair suitability')[0]
         self.assertEqual(section.count('<h3>'),6)
         self.assertNotIn('### ',section)
         for value in ('hypothetical future inquiry tool using invented test details','not descriptions of a live RidePrimetime',
