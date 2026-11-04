@@ -31,13 +31,13 @@ def load_checklist():
         status='published',published_on='2026-10-28',modified_on='2026-10-30',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
-def load_planning_article(slug, seo_title, summary, research_on):
+def load_planning_article(slug, seo_title, summary, research_on, published_on='2026-11-02'):
     text = (Path(__file__).parent / 'content' / (slug + '.md')).read_text(encoding='utf-8')
     title, body = text.split('\n', 1)
     parts = re.split(r'^## (.+)$', body, flags=re.M)
     blocks = lambda value: [p.strip() for p in value.strip().split('\n\n') if p.strip()]
     return dict(slug=slug, title=title.removeprefix('# '), seo_title=seo_title,
-                summary=summary, status='published', published_on='2026-11-02',
+                summary=summary, status='published', published_on=published_on,
                 research_on=research_on, intro=blocks(parts[0]),
                 sections=[(parts[i], blocks(parts[i+1])) for i in range(1, len(parts), 2)],
                 sources=[], publisher='Primetime Medical Transportation')
@@ -50,7 +50,11 @@ ARTICLES = (load_article(), load_checklist(),
     load_planning_article('planning-recurring-medical-rides-houston',
         'Planning Recurring Medical Rides in Houston',
         'Keep repeated Houston medical rides clear with a date-by-date family note for confirmations, return trips, schedule exceptions and changes.',
-        '2026-11-01'))
+        '2026-11-01'),
+    load_planning_article('finding-right-entrance-houston-medical-campus-ride',
+        'Medical Campus Ride Entrance Planning in Houston',
+        'Confirm the building, entrance, indoor check-in and return meeting point before arranging a private-pay Houston wheelchair or ambulatory ride.',
+        '2026-11-04', published_on='2026-11-04'))
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.

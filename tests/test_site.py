@@ -19,9 +19,9 @@ class SiteTests(unittest.TestCase):
         cls.pages={p:Page() for p in PUBLIC.rglob('*.html') if not p.name.startswith('google')}
         for p,parser in cls.pages.items():parser.feed(p.read_text(encoding='utf-8'))
     def test_page_count_and_sitemap(self):
-        self.assertEqual(len(self.pages),37) # 36 canonical routes plus 404
+        self.assertEqual(len(self.pages),38) # 37 canonical routes plus 404
         urls=[e.text for e in ET.parse(PUBLIC/'sitemap.xml').iter() if e.tag.endswith('loc')]
-        self.assertEqual(len(urls),36);self.assertEqual(len(set(urls)),36)
+        self.assertEqual(len(urls),37);self.assertEqual(len(set(urls)),37)
         for u in urls:self.assertTrue((PUBLIC/urlsplit(u).path.strip('/')/'index.html').is_file(),u)
     def test_all_local_references_resolve(self):
         for p,parser in self.pages.items():
