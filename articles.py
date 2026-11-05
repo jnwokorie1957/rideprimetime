@@ -79,7 +79,7 @@ def block(text):
     return '<p>'+inline(text)+'</p>'
 
 def published_articles(articles, today=None):
-    """Only explicitly published entries whose publication date has arrived."""
+    """Published entries, newest first; same-day entries retain registry order."""
     today = today or date.today()
     entries=[]
     for article in articles:
@@ -88,7 +88,7 @@ def published_articles(articles, today=None):
             raise ValueError('Article status must be draft or published.')
         if status == 'published' and date.fromisoformat(article['published_on']) <= today:
             entries.append(article)
-    return entries
+    return sorted(entries, key=lambda article: date.fromisoformat(article['published_on']), reverse=True)
 
 def article_document(document, title, summary, path, body):
     """Style article outputs only; leave the common document shell untouched."""
