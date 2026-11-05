@@ -7,3 +7,17 @@ Both businesses' owner-only reports are available at `https://pthhs.net/primetim
 Google Search Console verified `https://www.rideprimetime.net/` through the permanent `public/google42b973e2d43e4ad9.html` file. Keep that file after future rebuilds. Google accepted the sitemap, discovered 34 pages and confirmed the homepage is indexed. New indexing remains Google's decision.
 
 Released Firebase Hosting version: `e126206de3b7e982` on October 31, 2026. The production manifest was preserved. The existing live booking page received only the tag because Git main contains a separate pending booking-content change. Other canonical marketing pages matched production before editing. The source generator includes analytics for future builds, and public privacy copy was updated to match actual tracking. All 40 site tests and the menu checks pass; verification files are excluded from marketing-page semantic tests.
+# Live daily totals — November 4, 2026
+
+The shared owner dashboard now counts public page loads independently of GA4,
+refreshing today's live card every5seconds and resetting at Chicago midnight.
+The first partial day is labeled with its start time; GA4's processed-today
+total remains separately labeled beneath it. Native Chrome visits changed
+Ride's count from1to2 automatically after publication.
+
+The shared script sends only `{"v":1}` to the owner's
+https://pthhs.net/api/public-page-view, omitting credentials and referrer.
+No visitor identifier, URL or form contents are sent. Existing DNT/GPC and
+public-page guards apply. CSP permits this one owner endpoint. The public
+privacy notice describes the aggregate; build.py preserves it and the new
+script version. No Google permission or service account change was needed.

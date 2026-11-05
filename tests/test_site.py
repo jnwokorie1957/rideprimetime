@@ -58,7 +58,12 @@ class SiteTests(unittest.TestCase):
         for p in PUBLIC.rglob('*'):
             if p.is_file():self.assertIn(p.suffix,allowed,p)
         combined='\n'.join(p.read_text(encoding='utf-8') for p in PUBLIC.rglob('*') if p.is_file() and p.suffix not in ('.png','.jpg'))
-        for marker in ('<?php','DB_PASSWORD','AUTH_KEY','BEGIN PRIVATE KEY','wp-config','admin-ajax.php','forminator_nonce','eval(','document.write(','innerHTML','fetch('):self.assertNotIn(marker,combined)
+        for marker in ('<?php','DB_PASSWORD','AUTH_KEY','BEGIN PRIVATE KEY','wp-config','admin-ajax.php','forminator_nonce','eval(','document.write(','innerHTML'):self.assertNotIn(marker,combined)
+        tracking=(PUBLIC/'assets/analytics.js').read_text(encoding='utf-8')
+        self.assertEqual(combined.count('fetch('),1)
+        self.assertIn("fetch('https://pthhs.net/api/public-page-view'",tracking)
+        self.assertIn("body:'{\"v\":1}'",tracking)
+        self.assertIn("credentials:'omit',referrerPolicy:'no-referrer'",tracking)
         for claim in ('Medicaid accepted','guaranteed on-time','our fleet','bariatric transport','stretcher transport','booking confirmed','submission successful'):self.assertNotIn(claim,combined)
     def test_no_third_party_active_resources(self):
         for p,parser in self.pages.items():
