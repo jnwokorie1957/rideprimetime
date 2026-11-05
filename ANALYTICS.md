@@ -15,9 +15,21 @@ The first partial day is labeled with its start time; GA4's processed-today
 total remains separately labeled beneath it. Native Chrome visits changed
 Ride's count from1to2 automatically after publication.
 
-The shared script sends only `{"v":1}` to the owner's
+The page-view message is `{"v":1}` to the owner's
 https://pthhs.net/api/public-page-view, omitting credentials and referrer.
-No visitor identifier, URL or form contents are sent. Existing DNT/GPC and
-public-page guards apply. CSP permits this one owner endpoint. The public
-privacy notice describes the aggregate; build.py preserves it and the new
-script version. No Google permission or service account change was needed.
+Existing DNT/GPC and public-page guards apply. CSP permits this one owner
+endpoint. No Google permission or service account change was needed.
+
+## Live visitors — November 4, 2026
+
+The primary visitor card now counts browser sessions active within 60 seconds
+and updates every 5 seconds. Google's 30-minute users remain separately labeled.
+Visible pages send 15-second heartbeats with temporary random session/document
+tokens; these never add page views. A same-origin browser token avoids counting
+multiple tabs twice and expires after 30 minutes of inactivity. The server
+stores only hashes and temporary presence timestamps; activity expires after
+60 seconds, with automatic TTL cleanup. No page address, contact/form contents,
+or private operations activity is sent. The public notice and build.py describe
+this behavior. Native Chrome testing showed 0 → 1 when visiting and 1 → 0 after
+closing, without pressing dashboard Refresh. The backend implementation and
+scoped retention policy are maintained in the PTHHS repository.

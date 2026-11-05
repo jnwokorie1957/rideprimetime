@@ -62,7 +62,9 @@ class SiteTests(unittest.TestCase):
         tracking=(PUBLIC/'assets/analytics.js').read_text(encoding='utf-8')
         self.assertEqual(combined.count('fetch('),1)
         self.assertIn("fetch('https://pthhs.net/api/public-page-view'",tracking)
-        self.assertIn("body:'{\"v\":1}'",tracking)
+        self.assertIn('send({v:1})',tracking)
+        self.assertIn('body:JSON.stringify(data)',tracking)
+        self.assertIn("send({v:2,kind:'presence',session,tab,active})",tracking)
         self.assertIn("credentials:'omit',referrerPolicy:'no-referrer'",tracking)
         for claim in ('Medicaid accepted','guaranteed on-time','our fleet','bariatric transport','stretcher transport','booking confirmed','submission successful'):self.assertNotIn(claim,combined)
     def test_no_third_party_active_resources(self):
