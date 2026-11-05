@@ -31,7 +31,7 @@ def load_checklist():
         status='published',published_on='2026-10-28',modified_on='2026-10-30',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
-def load_planning_article(slug, seo_title, summary, research_on, published_on='2026-11-02'):
+def load_planning_article(slug, seo_title, summary, research_on, published_on='2026-11-02', ai_disclosure=None):
     text = (Path(__file__).parent / 'content' / (slug + '.md')).read_text(encoding='utf-8')
     title, body = text.split('\n', 1)
     parts = re.split(r'^## (.+)$', body, flags=re.M)
@@ -40,7 +40,7 @@ def load_planning_article(slug, seo_title, summary, research_on, published_on='2
                 summary=summary, status='published', published_on=published_on,
                 research_on=research_on, intro=blocks(parts[0]),
                 sections=[(parts[i], blocks(parts[i+1])) for i in range(1, len(parts), 2)],
-                sources=[], publisher='Primetime Medical Transportation')
+                sources=[], publisher='Primetime Medical Transportation', ai_disclosure=ai_disclosure)
 
 ARTICLES = (load_article(), load_checklist(),
     load_planning_article('bringing-a-companion-on-a-medical-ride-in-houston',
@@ -54,7 +54,12 @@ ARTICLES = (load_article(), load_checklist(),
     load_planning_article('finding-right-entrance-houston-medical-campus-ride',
         'Medical Campus Ride Entrance Planning in Houston',
         'Confirm the building, entrance, indoor check-in and return meeting point before arranging a private-pay Houston wheelchair or ambulatory ride.',
-        '2026-11-04', published_on='2026-11-04'))
+        '2026-11-04', published_on='2026-11-04'),
+    load_planning_article('planning-wheelchair-ride-houston-family-gathering',
+        'Planning a Wheelchair Ride to a Houston Family Gathering',
+        "Plan a Houston family visit with questions about the host's space, arrival access, destination help, belongings and a separately agreed return ride.",
+        '2026-11-05', published_on='2026-11-05',
+        ai_disclosure='Prepared with AI drafting assistance.'))
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.
@@ -136,6 +141,7 @@ def render_articles(articles, document, write):
         sources=''.join('<li><a href="'+escape(url,quote=True)+'">'+escape(label)+'</a></li>'
                         for label,url in article['sources'])
         references='<h2>Sources</h2><ul>'+sources+'</ul>' if sources else ''
+        disclosure='<p class="fine">'+escape(article['ai_disclosure'])+'</p>' if article.get('ai_disclosure') else ''
         structured=''
         article_attributes=''
         if article.get('publisher'):
@@ -151,7 +157,7 @@ def render_articles(articles, document, write):
               '<p class="eyebrow">RIDE PRIMETIME ARTICLES</p><h1>'+title+'</h1><p class="lead">'+summary+'</p>'
               '<div class="article-meta"><p class="fine">Published by Robert, CTO of Primetime Medical Transportation</p>'
               '<p class="fine">Published <time datetime="'+published+'">'+published+'</time>. Research checked '+escape(article.get('research_on',article['published_on']))+'.'+update_note+'</p></div></section>'
-              '<article class="section wrap prose article-prose"'+article_attributes+'>'+structured+intro+contents+sections+references+'<p class="article-back"><a href="/articles/">Back to all articles <span aria-hidden="true">↗</span></a></p></article>')
+              '<article class="section wrap prose article-prose"'+article_attributes+'>'+structured+intro+contents+sections+references+disclosure+'<p class="article-back"><a href="/articles/">Back to all articles <span aria-hidden="true">↗</span></a></p></article>')
         write(path,article_document(document,article.get('seo_title',article['title']),article['summary'],path,body))
         paths.append(path)
         items.append('<li><p class="article-card-meta">Article <span aria-hidden="true">·</span> <time datetime="'+published+'">'+published+'</time></p><h2><a href="'+path+'">'+title+'<span class="article-card-arrow" aria-hidden="true">↗</span></a></h2><p>'+summary+'</p></li>')

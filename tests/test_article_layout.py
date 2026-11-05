@@ -38,8 +38,8 @@ class ArticleLayoutTests(unittest.TestCase):
         self.assertIn('Same &lt;heading&gt;',page);self.assertNotIn('<heading>',page)
     def test_index_cards_have_metadata_and_five_articles(self):
         page=(ROOT/'public/articles/index.html').read_text()
-        self.assertEqual(page.count('class="article-card-meta"'),5)
-        self.assertEqual(page.count('class="article-card-arrow" aria-hidden="true"'),5)
+        self.assertEqual(page.count('class="article-card-meta"'),6)
+        self.assertEqual(page.count('class="article-card-arrow" aria-hidden="true"'),6)
     def test_article_styles_are_not_added_to_service_pages(self):
         for path in (ROOT/'public').rglob('*.html'):
             if 'articles' not in path.relative_to(ROOT/'public').parts:

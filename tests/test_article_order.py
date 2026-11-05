@@ -31,5 +31,5 @@ class ArticleOrderTests(unittest.TestCase):
     def test_generated_index_dates_descend(self):
         index = (Path(__file__).resolve().parents[1] / 'public/articles/index.html').read_text(encoding='utf-8')
         dates = re.findall(r'<time datetime="([^"]+)">', index)
-        self.assertEqual(len(dates), 5)
+        self.assertEqual(len(dates), 6)
         self.assertEqual(dates, sorted(dates, reverse=True))
