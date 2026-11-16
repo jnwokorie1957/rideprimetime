@@ -59,7 +59,11 @@ ARTICLES = (load_article(), load_checklist(),
         'Planning a Wheelchair Ride to a Houston Family Gathering',
         "Plan a Houston family visit with questions about the host's space, arrival access, destination help, belongings and a separately agreed return ride.",
         '2026-11-05', published_on='2026-11-05',
-        ai_disclosure='Prepared with AI drafting assistance.'))
+        ai_disclosure='Prepared with AI drafting assistance.'),
+    load_planning_article('comparing-private-pay-medical-ride-quotes-houston',
+        'Comparing Private-Pay Medical Ride Quotes in Houston',
+        'Compare Houston medical ride quotes by checking the journeys, assistance, timing, price terms and changes that each provider has actually agreed to.',
+        '2026-11-15', published_on='2026-11-15'))
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.

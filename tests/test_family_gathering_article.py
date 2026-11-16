@@ -29,9 +29,9 @@ class FamilyGatheringArticleTests(unittest.TestCase):
         self.assertEqual(self.text.count('Prepared with AI drafting assistance.'), 1)
         self.assertIn('Research checked 2026-11-05', self.text)
         self.assertIn('datetime="2026-11-05"', self.page)
-        self.assertEqual(published_articles(ARTICLES)[0]['slug'], SLUG)
+        self.assertIn(SLUG, [a['slug'] for a in published_articles(ARTICLES)])
         index = (ROOT / 'public/articles/index.html').read_text(encoding='utf-8')
-        self.assertEqual(re.findall(r'<h2><a href="([^"]+)"', index)[0], PATH)
+        self.assertIn(PATH, re.findall(r'<h2><a href="([^"]+)"', index))
         self.assertIn(PATH, (ROOT / 'public/sitemap.xml').read_text(encoding='utf-8'))
 
     def test_selectable_checklist_sources_and_scope(self):
