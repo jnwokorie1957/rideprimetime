@@ -1,8 +1,10 @@
 # Comparing Private-Pay Medical Ride Quotes in Houston
 
-Two transportation prices are useful to compare only when you understand what each one covers. A lower number might describe one journey while another includes a return. One conversation may have included a companion; another may still be waiting for that detail.
+To find out what a private-pay wheelchair ride in Houston will cost, ask for a quote for your exact trip. Have the pickup address, facility entrance, date, arrival time and wheelchair details ready. Ask for the total and whether it covers one way or both ways. If the return time is unknown, ask how the provider would arrange and quote it.
 
-For a planned wheelchair or ambulatory ride in Houston, start by giving each provider the same trip information. Then compare the answers, the unresolved questions and the price together. This guide offers an optional way to organize that comparison. It is not a rate sheet, a provider ranking or a promise that a particular trip is available.
+The same approach works for a private-pay ambulatory ride. Ride Primetime confirms the fare and availability directly for each trip. A quote for a different route or time may cover different arrangements.
+
+For a Texas Medical Center appointment, ask the facility which building and entrance to use for pickup and drop-off. If the rider will leave by a different entrance, include it when you request the return quote. See the [Houston medical campus entrance checklist](https://www.rideprimetime.net/articles/finding-right-entrance-houston-medical-campus-ride/) for what to confirm before calling.
 
 ## Give each provider the same trip description
 

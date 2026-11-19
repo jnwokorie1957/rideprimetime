@@ -31,7 +31,7 @@ def load_checklist():
         status='published',published_on='2026-10-28',modified_on='2026-10-30',research_on='2026-10-28',intro=blocks(parts[0]),
         sections=[(parts[i],blocks(parts[i+1])) for i in range(1,len(parts),2)],sources=[],publisher='Primetime Medical Transportation')
 
-def load_planning_article(slug, seo_title, summary, research_on, published_on='2026-11-02', ai_disclosure=None):
+def load_planning_article(slug, seo_title, summary, research_on, published_on='2026-11-02', ai_disclosure=None, modified_on=None):
     text = (Path(__file__).parent / 'content' / (slug + '.md')).read_text(encoding='utf-8')
     title, body = text.split('\n', 1)
     parts = re.split(r'^## (.+)$', body, flags=re.M)
@@ -40,7 +40,8 @@ def load_planning_article(slug, seo_title, summary, research_on, published_on='2
                 summary=summary, status='published', published_on=published_on,
                 research_on=research_on, intro=blocks(parts[0]),
                 sections=[(parts[i], blocks(parts[i+1])) for i in range(1, len(parts), 2)],
-                sources=[], publisher='Primetime Medical Transportation', ai_disclosure=ai_disclosure)
+                sources=[], publisher='Primetime Medical Transportation', ai_disclosure=ai_disclosure,
+                **({'modified_on': modified_on} if modified_on else {}))
 
 ARTICLES = (load_article(), load_checklist(),
     load_planning_article('bringing-a-companion-on-a-medical-ride-in-houston',
@@ -61,9 +62,9 @@ ARTICLES = (load_article(), load_checklist(),
         '2026-11-05', published_on='2026-11-05',
         ai_disclosure='Prepared with AI drafting assistance.'),
     load_planning_article('comparing-private-pay-medical-ride-quotes-houston',
-        'Comparing Private-Pay Medical Ride Quotes in Houston',
-        'Compare Houston medical ride quotes by checking the journeys, assistance, timing, price terms and changes that each provider has actually agreed to.',
-        '2026-11-15', published_on='2026-11-15'))
+        'Wheelchair Transportation Cost in Houston: How to Get a Quote',
+        'Get and compare a private-pay wheelchair ride quote in Houston. Check one-way or round-trip pricing, pickup details, waiting and cancellation terms.',
+        '2026-11-18', published_on='2026-11-15', modified_on='2026-11-18'))
 
 def inline(text):
     # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.

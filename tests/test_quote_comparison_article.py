@@ -17,4 +17,4 @@ class QuoteComparisonTests(unittest.TestCase):
  def test_exact_reviewed_reader_content(self):
   import hashlib
   content=(ROOT/'content'/f'{SLUG}.md').read_bytes()
-  self.assertEqual(hashlib.sha256(content).hexdigest(),'069c9eb0efc2095cf45ef0a024eaae746f2e7b45776a0a91a7fa60cdb97cae2f')
+  self.assertEqual(hashlib.sha256(content).hexdigest(),'17f5ec171b7fbe8accd36fc48c85bc28433a3b1f91ee0adc10eb5f6399d93e67')
