@@ -107,5 +107,3 @@ Before accepting, check whether the answer still applies to the current date, ro
 ## Discuss your trip with Ride Primetime
 
 [Ride Primetime provides private-pay wheelchair and ambulatory non-emergency transportation in Houston](https://www.rideprimetime.net/non-emergency-medical-transportation-services/), with suitability and availability confirmed for the individual trip. Call 713-423-4430 to discuss your journey and request a quote. An inquiry is not a confirmed reservation.
-
-Prepared with AI drafting assistance.

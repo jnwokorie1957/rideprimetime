@@ -26,7 +26,7 @@ class FamilyGatheringArticleTests(unittest.TestCase):
         self.assertIn('rel="canonical" href="https://www.rideprimetime.net' + PATH + '"', self.page)
         self.assertEqual(self.page.count('<h1>'), 1)
         self.assertEqual(self.text.count('Published by Robert, CTO of Primetime Medical Transportation'), 1)
-        self.assertEqual(self.text.count('Prepared with AI drafting assistance.'), 1)
+        self.assertNotIn('Prepared with AI drafting assistance.', self.text)
         self.assertIn('Research checked 2026-11-05', self.text)
         self.assertIn('datetime="2026-11-05"', self.page)
         self.assertIn(SLUG, [a['slug'] for a in published_articles(ARTICLES)])

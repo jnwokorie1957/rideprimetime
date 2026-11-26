@@ -35,13 +35,25 @@ def load_planning_article(slug, seo_title, summary, research_on, published_on='2
     text = (Path(__file__).parent / 'content' / (slug + '.md')).read_text(encoding='utf-8')
     title, body = text.split('\n', 1)
     parts = re.split(r'^## (.+)$', body, flags=re.M)
-    blocks = lambda value: [p.strip() for p in value.strip().split('\n\n') if p.strip()]
     return dict(slug=slug, title=title.removeprefix('# '), seo_title=seo_title,
                 summary=summary, status='published', published_on=published_on,
-                research_on=research_on, intro=blocks(parts[0]),
-                sections=[(parts[i], blocks(parts[i+1])) for i in range(1, len(parts), 2)],
+                research_on=research_on, intro=editorial_blocks(parts[0]),
+                sections=[(parts[i], editorial_blocks(parts[i+1])) for i in range(1, len(parts), 2)],
                 sources=[], publisher='Primetime Medical Transportation', ai_disclosure=ai_disclosure,
                 **({'modified_on': modified_on} if modified_on else {}))
+
+CODE_FENCE = re.compile(r'^```[a-zA-Z0-9]*\n([\s\S]*?)\n```[ \t]*$', re.M)
+
+
+def editorial_blocks(text):
+    blocks = []
+    start = 0
+    for match in CODE_FENCE.finditer(text):
+        blocks.extend(paragraph.strip() for paragraph in text[start:match.start()].split('\n\n') if paragraph.strip())
+        blocks.append(match.group(0))
+        start = match.end()
+    blocks.extend(paragraph.strip() for paragraph in text[start:].split('\n\n') if paragraph.strip())
+    return blocks
 
 ARTICLES = (load_article(), load_checklist(),
     load_planning_article('bringing-a-companion-on-a-medical-ride-in-houston',
@@ -59,20 +71,24 @@ ARTICLES = (load_article(), load_checklist(),
     load_planning_article('planning-wheelchair-ride-houston-family-gathering',
         'Planning a Wheelchair Ride to a Houston Family Gathering',
         "Plan a Houston family visit with questions about the host's space, arrival access, destination help, belongings and a separately agreed return ride.",
-        '2026-11-05', published_on='2026-11-05',
-        ai_disclosure='Prepared with AI drafting assistance.'),
+        '2026-11-05', published_on='2026-11-05'),
     load_planning_article('comparing-private-pay-medical-ride-quotes-houston',
         'Wheelchair Transportation Cost in Houston: How to Get a Quote',
         'Get and compare a private-pay wheelchair ride quote in Houston. Check one-way or round-trip pricing, pickup details, waiting and cancellation terms.',
-        '2026-11-18', published_on='2026-11-15', modified_on='2026-11-18'))
+        '2026-11-18', published_on='2026-11-15', modified_on='2026-11-18'),
+    load_planning_article('model-pickup-access-as-a-report-about-a-route',
+        'Model Pickup Access as a Report About a Route',
+        'Track the route between a specific entrance and loading zone, and flag wheelchair pickup access reports that are stale or disagree.',
+        '2026-11-25', published_on='2026-11-25'))
 
 def inline(text):
-    # Deliberately small editorial syntax: emphasis and HTTPS links; never raw HTML.
-    pattern=r'\*\*([^*]+)\*\*|\[([^\]]+)\]\((https://[^\s)]+)\)'
+    # Deliberately small editorial syntax: emphasis, inline code and HTTPS links.
+    pattern=r'\*\*([^*]+)\*\*|\[([^\]]+)\]\((https://[^\s)]+)\)|`([^`\n]+)`'
     output=[];end=0
     for match in re.finditer(pattern,text):
         output.append(escape(text[end:match.start()]))
         if match.group(1):output.append('<strong>'+escape(match.group(1))+'</strong>')
+        elif match.group(4):output.append('<code>'+escape(match.group(4))+'</code>')
         else:
             url=match.group(3);parsed=urlsplit(url)
             if not parsed.netloc or parsed.username or parsed.password:raise ValueError('Invalid article link')
@@ -81,6 +97,9 @@ def inline(text):
     return ''.join(output)+escape(text[end:])
 
 def block(text):
+    fenced_code = CODE_FENCE.fullmatch(text)
+    if fenced_code:
+        return '<pre><code>' + escape(fenced_code.group(1)) + '</code></pre>'
     lines=text.splitlines()
     if len(lines)==1 and text.startswith('### '):
         return '<h3>'+inline(text[4:])+'</h3>'
